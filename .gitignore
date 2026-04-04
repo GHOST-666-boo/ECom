@@ -1,0 +1,30 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+.kiro/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Root-level test/task files (not needed in repo)
+TASK_*.md
+TASK-*.md
+test-*.js
+test-*.ps1
+
+# Root-level docs (optional - remove if you want these in repo)
+Architecture_Document_Handicraft_Jewelry.*
+
+# Root-level composer (not needed - backend has its own)
+/composer.json
+/composer.lock
+/vendor/
+
+# Stitch design reference (not needed in production)
+/stitch/

@@ -1,0 +1,55 @@
+# Laravel default ignores
+*.log
+.DS_Store
+Thumbs.db
+
+# Environment files (secrets)
+.env
+.env.backup
+.env.production
+
+# IDE / Editor
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+
+# Auth
+/auth.json
+
+# Dependencies (install via composer install)
+/node_modules
+/vendor
+
+# Build output
+/public/build
+/public/hot
+/public/storage
+
+# Storage keys
+/storage/*.key
+/storage/pail
+
+# Task/Checkpoint/Documentation files (dev-only, not needed in repo)
+CHECKPOINT_*.md
+TASK_*.md
+FILAMENT_*.md
+PASSWORD_RESET_IMPLEMENTATION.md
+LOGOUT_ENDPOINT_DOCUMENTATION.md
+PEST_SETUP_SUMMARY.md
+PHASE_*_SUMMARY.md
+PROPERTY_TEST_SUMMARY.md
+FILAMENT_SETUP_COMPLETE.md
+
+# One-time test/debug scripts
+create-test-token.php
+test-checkout-api.php
+verify_properties.php
+
+# Misc
+Homestead.json
+Homestead.yaml

@@ -1,0 +1,26 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+    
+    # Level 0 is the loosest, level 9 is the strictest
+    level: 5
+    
+    ignoreErrors:
+        # Ignore Filament-related errors
+        - '#Call to an undefined method Filament\\#'
+        - '#Access to an undefined property Filament\\#'
+        
+        # Ignore Laravel magic methods
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'
+        - '#Call to an undefined method Illuminate\\Database\\Query\\Builder#'
+        
+    excludePaths:
+        - bootstrap/cache
+        - storage
+        - vendor
+    
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
