@@ -28,8 +28,9 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        // Get orders with cursor-based pagination (20 per page)
-        $orders = Order::where('user_id', $user->id)
+        // Get orders with order items and products for displaying images
+        $orders = Order::with(['orderItems.product:id,name,slug,images'])
+            ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->cursorPaginate(20);
 
@@ -426,6 +427,26 @@ class OrderController extends Controller
         }
 
         try {
+            // Check if Razorpay credentials are configured
+            $keyId = config('services.razorpay.key_id');
+            $keySecret = config('services.razorpay.key_secret');
+
+            if (empty($keyId) || empty($keySecret) || 
+                $keyId === 'your_razorpay_key_id' || 
+                $keySecret === 'your_razorpay_key_secret') {
+                Log::error('Razorpay credentials not configured', [
+                    'order_id' => $order->id,
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment gateway not configured. Please use Cash on Delivery or contact support.',
+                    'errors' => [
+                        'payment' => ['Razorpay is not configured. Please use Cash on Delivery.'],
+                    ],
+                ], 422);
+            }
+
             // Initialize Razorpay API (use app() for dependency injection support)
             $api = app(Api::class);
 

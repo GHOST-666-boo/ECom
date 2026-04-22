@@ -11,6 +11,7 @@ import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import AddressesPage from './pages/AddressesPage';
+import ContactPage from './pages/ContactPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="products/:slug" element={<ProductDetailPage />} />
+          <Route path="contact" element={<ContactPage />} />
 
           {/* Protected Routes */}
           <Route

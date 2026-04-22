@@ -40,7 +40,7 @@ export default function OrderDetailPage() {
       const response = await axiosInstance.get(`/orders/${id}`);
       
       if (response.data.success) {
-        setOrder(response.data.data);
+        setOrder(response.data.data.order);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load order details');
@@ -182,7 +182,7 @@ export default function OrderDetailPage() {
             Order Items
           </h2>
           <div className="space-y-4">
-            {order.order_items?.map((item) => (
+            {order.items?.map((item) => (
               <div key={item.id} className="flex gap-4">
                 <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
                   {item.product?.images?.[0] ? (

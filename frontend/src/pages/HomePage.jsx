@@ -64,19 +64,6 @@ export default function HomePage() {
               >
                 Explore the Collection
               </Link>
-              <button
-                className="px-8 py-4 text-sm font-medium tracking-wide transition-colors"
-                style={{
-                  background: '#e5e2e1',
-                  color: '#463f38',
-                  fontFamily: 'Manrope, sans-serif',
-                  letterSpacing: '0.08em',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#dcd9d9')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#e5e2e1')}
-              >
-                Our Story
-              </button>
             </div>
           </div>
 

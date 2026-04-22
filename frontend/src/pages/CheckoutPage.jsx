@@ -65,10 +65,23 @@ export default function CheckoutPage() {
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) { setError('Failed to load Razorpay.'); setLoading(false); return; }
       const response = await axiosInstance.post('/payments/razorpay/create', { order_id: orderId });
-      if (!response.data.success) { setError('Failed to initialize payment'); setLoading(false); return; }
+      if (!response.data.success) { 
+        setError(response.data.message || 'Failed to initialize payment'); 
+        setLoading(false); 
+        return; 
+      }
       const { razorpay_order_id, amount, currency } = response.data.data;
+      
+      // Check if Razorpay key is configured
+      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      if (!razorpayKey || razorpayKey === 'your_razorpay_key_id') {
+        setError('Payment gateway not configured. Please use Cash on Delivery.');
+        setLoading(false);
+        return;
+      }
+
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: razorpayKey,
         amount, currency,
         name: 'Artisan Kala',
         description: `Order #${orderId}`,
@@ -80,7 +93,8 @@ export default function CheckoutPage() {
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (err) {
-      setError(err.response?.data?.message || 'Payment failed.');
+      const errorMessage = err.response?.data?.message || 'Payment failed.';
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -95,7 +109,7 @@ export default function CheckoutPage() {
         payment_method: paymentMethod,
       });
       if (response.data.success) {
-        const order = response.data.data;
+        const order = response.data.data.order;
         if (paymentMethod === 'cod') { clearCart(); navigate(`/orders/${order.id}`); }
         else if (paymentMethod === 'razorpay') await handleRazorpayPayment(order.id);
       }

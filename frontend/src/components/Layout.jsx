@@ -7,7 +7,8 @@ import NewsletterForm from './NewsletterForm';
 import axios from '../lib/axios';
 
 export default function Layout() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -32,7 +33,8 @@ export default function Layout() {
       console.error('Logout error:', error);
     } finally {
       logout();
-      setIsMenuOpen(false);
+      setIsProfileMenuOpen(false);
+      setIsMobileMenuOpen(false);
     }
   };
 
@@ -66,6 +68,7 @@ export default function Layout() {
             {[
               { to: '/', label: 'Home' },
               { to: '/products', label: 'Collection' },
+              { to: '/contact', label: 'Contact' },
             ].map(({ to, label }) => (
               <Link
                 key={to}
@@ -107,9 +110,9 @@ export default function Layout() {
             </Link>
 
             {/* User */}
-            <div className="relative">
+            <div className="relative hidden md:block">
               <button
-                onClick={() => isAuthenticated ? setIsMenuOpen(!isMenuOpen) : setIsAuthModalOpen(true)}
+                onClick={() => isAuthenticated ? setIsProfileMenuOpen(!isProfileMenuOpen) : setIsAuthModalOpen(true)}
                 className="p-2 rounded-full transition-all duration-200"
                 style={{ color: '#463f38' }}
                 onMouseEnter={e => (e.currentTarget.style.background = '#f6f3f2')}
@@ -122,7 +125,7 @@ export default function Layout() {
                 </svg>
               </button>
 
-              {isMenuOpen && isAuthenticated && (
+              {isProfileMenuOpen && isAuthenticated && (
                 <div
                   className="absolute right-0 mt-2 w-48 py-2 z-50"
                   style={{
@@ -141,7 +144,7 @@ export default function Layout() {
                       to={to}
                       className="block px-4 py-2 text-sm transition-colors"
                       style={{ color: '#1b1b1c', fontFamily: 'Manrope, sans-serif' }}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => setIsProfileMenuOpen(false)}
                       onMouseEnter={e => (e.target.style.background = '#eae7e7')}
                       onMouseLeave={e => (e.target.style.background = 'transparent')}
                     >
@@ -166,7 +169,7 @@ export default function Layout() {
             <button
               className="md:hidden p-2"
               style={{ color: '#463f38' }}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
@@ -176,7 +179,7 @@ export default function Layout() {
         </div>
 
         {/* Mobile Nav */}
-        {isMenuOpen && (
+        {isMobileMenuOpen && (
           <nav
             className="md:hidden px-8 pb-6 space-y-1"
             style={{ borderTop: '1px solid rgba(207,197,188,0.18)' }}
@@ -184,6 +187,7 @@ export default function Layout() {
             {[
               { to: '/', label: 'Home' },
               { to: '/products', label: 'Collection' },
+              { to: '/contact', label: 'Contact' },
               ...(isAuthenticated ? [
                 { to: '/profile', label: 'Profile' },
                 { to: '/orders', label: 'Orders' },
@@ -195,18 +199,29 @@ export default function Layout() {
                 to={to}
                 className="block py-2 text-sm tracking-wide"
                 style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {label}
               </Link>
             ))}
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <button
                 className="block w-full text-left py-2 text-sm tracking-wide"
                 style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
                 onClick={handleLogout}
               >
                 Logout
+              </button>
+            ) : (
+              <button
+                className="block w-full text-left py-2 text-sm tracking-wide"
+                style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsAuthModalOpen(true);
+                }}
+              >
+                Login / Sign Up
               </button>
             )}
           </nav>
@@ -258,7 +273,7 @@ export default function Layout() {
               © 2024 Artisan Kala. Forged with Intention.
             </p>
             <div className="flex gap-8">
-              {['Products', 'Cart', 'Orders', 'Profile'].map((label) => (
+              {['Products', 'Contact', 'Cart', 'Orders', 'Profile'].map((label) => (
                 <Link
                   key={label}
                   to={`/${label.toLowerCase()}`}
