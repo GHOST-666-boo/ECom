@@ -83,6 +83,9 @@ class OrderController extends Controller
                     'status' => $order->status,
                     'payment_method' => $order->payment_method,
                     'payment_id' => $order->payment_id,
+                    'payment_status' => $order->payment_status,
+                    'tracking_number' => $order->tracking_number,
+                    'courier_name' => $order->courier_name,
                     'total' => $order->total,
                     'address_snapshot' => $order->address_snapshot,
                     'items' => $order->orderItems->map(function ($item) {
@@ -90,7 +93,7 @@ class OrderController extends Controller
                             'id' => $item->id,
                             'product_id' => $item->product_id,
                             'quantity' => $item->quantity,
-                            'price' => $item->price, // Price snapshot from order_items
+                            'price' => $item->price,
                             'product' => $item->product ? [
                                 'id' => $item->product->id,
                                 'name' => $item->product->name,
@@ -612,7 +615,9 @@ class OrderController extends Controller
 
         // Validate request
         $validated = $request->validate([
-            'status' => 'required|in:pending,confirmed,shipped,delivered,cancelled',
+            'status'          => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled',
+            'tracking_number' => 'nullable|string|max:100',
+            'courier_name'    => 'nullable|string|max:100',
         ]);
 
         // Get order
@@ -630,11 +635,12 @@ class OrderController extends Controller
 
         // Define valid status transitions
         $validTransitions = [
-            'pending' => ['confirmed', 'cancelled'],
-            'confirmed' => ['shipped', 'cancelled'],
-            'shipped' => ['delivered'],
-            'delivered' => [],
-            'cancelled' => [],
+            'pending'    => ['confirmed', 'cancelled'],
+            'confirmed'  => ['processing', 'cancelled'],
+            'processing' => ['shipped', 'cancelled'],
+            'shipped'    => ['delivered'],
+            'delivered'  => [],
+            'cancelled'  => [],
         ];
 
         // Check if transition is valid
@@ -646,6 +652,26 @@ class OrderController extends Controller
                     'status' => ["Cannot transition from {$currentStatus} to {$newStatus}"],
                 ],
             ], 422);
+        }
+
+        // When shipping, tracking number is required
+        if ($newStatus === 'shipped') {
+            if (empty($validated['tracking_number'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tracking number is required when marking order as shipped',
+                    'errors' => [
+                        'tracking_number' => ['Tracking number is required when shipping an order.'],
+                    ],
+                ], 422);
+            }
+            $order->tracking_number = $validated['tracking_number'];
+            $order->courier_name    = $validated['courier_name'] ?? null;
+        }
+
+        // Auto-mark COD as paid when delivered
+        if ($newStatus === 'delivered' && $order->payment_method === 'cod') {
+            $order->payment_status = 'paid';
         }
 
         // Update order status
@@ -674,10 +700,13 @@ class OrderController extends Controller
             'message' => 'Order status updated successfully',
             'data' => [
                 'order' => [
-                    'id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'status' => $order->status,
-                    'updated_at' => $order->updated_at,
+                    'id'             => $order->id,
+                    'order_number'   => $order->order_number,
+                    'status'         => $order->status,
+                    'payment_status' => $order->payment_status,
+                    'tracking_number'=> $order->tracking_number,
+                    'courier_name'   => $order->courier_name,
+                    'updated_at'     => $order->updated_at,
                 ],
             ],
         ], 200);

@@ -28,3 +28,5 @@ Architecture_Document_Handicraft_Jewelry.*
 
 # Stitch design reference (not needed in production)
 /stitch/
+/my-first-agent
+*.md

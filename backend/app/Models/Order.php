@@ -15,6 +15,9 @@ class Order extends Model
         'status',
         'payment_method',
         'payment_id',
+        'payment_status',
+        'tracking_number',
+        'courier_name',
         'total',
         'address_snapshot',
     ];
@@ -25,6 +28,22 @@ class Order extends Model
             'total' => 'decimal:2',
             'address_snapshot' => 'array',
         ];
+    }
+
+    /**
+     * Check if order is shipped or delivered (has tracking info).
+     */
+    public function isShipped(): bool
+    {
+        return in_array($this->status, ['shipped', 'delivered']);
+    }
+
+    /**
+     * Check if COD payment is collected.
+     */
+    public function isCodPaid(): bool
+    {
+        return $this->payment_method === 'cod' && $this->payment_status === 'paid';
     }
 
     /**
