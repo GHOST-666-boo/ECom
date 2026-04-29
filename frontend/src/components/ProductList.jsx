@@ -6,7 +6,7 @@ import useAuthStore from '../stores/authStore';
 import useCartStore from '../stores/cartStore';
 
 /**
- * ProductList - Metallic Artisan (Oat Edition)
+ * ProductList - Metallic Vriddhi (Oat Edition)
  * 4-column gallery grid with "Quick Look" hover, editorial typography
  */
 export default function ProductList() {

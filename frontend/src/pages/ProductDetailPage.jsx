@@ -6,7 +6,7 @@ import useAuthStore from '../stores/authStore';
 import useCartStore from '../stores/cartStore';
 
 /**
- * ProductDetailPage - Metallic Artisan (Oat Edition)
+ * ProductDetailPage - Metallic Vriddhi (Oat Edition)
  * Asymmetric layout: large gallery col + sticky product info col
  */
 export default function ProductDetailPage() {
@@ -168,7 +168,7 @@ export default function ProductDetailPage() {
               className="text-xs tracking-[0.2em] uppercase block mb-4"
               style={{ color: '#7e766e', fontFamily: 'Manrope, sans-serif' }}
             >
-              {product.category?.name || 'Artisanal Object'}
+              {product.category?.name || 'Handcrafted Object'}
             </span>
             <h1
               className="text-5xl italic leading-none mb-6"

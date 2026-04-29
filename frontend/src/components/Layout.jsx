@@ -60,7 +60,7 @@ export default function Layout() {
             className="text-2xl tracking-tighter"
             style={{ fontFamily: 'Noto Serif, serif', fontStyle: 'italic', color: '#4c3e25' }}
           >
-            Artisan Kala
+            Vriddhi
           </Link>
 
           {/* Desktop Nav Links */}
@@ -244,14 +244,14 @@ export default function Layout() {
                 className="text-2xl mb-3 italic"
                 style={{ fontFamily: 'Noto Serif, serif', color: '#4c3e25' }}
               >
-                Artisan Kala
+                Vriddhi
               </p>
               <p
                 className="text-xs tracking-widest uppercase leading-relaxed"
                 style={{ color: '#7e766e', fontFamily: 'Manrope, sans-serif' }}
               >
                 Handcrafted with intention.<br />
-                Connecting artisans &amp; collectors.
+                Connecting creators &amp; collectors.
               </p>
             </div>
 
@@ -270,7 +270,7 @@ export default function Layout() {
               className="text-[10px] tracking-widest uppercase"
               style={{ color: '#7e766e', fontFamily: 'Manrope, sans-serif' }}
             >
-              © 2024 Artisan Kala. Forged with Intention.
+              © 2024 Vriddhi. Forged with Intention.
             </p>
             <div className="flex gap-8">
               {['Products', 'Contact', 'Cart', 'Orders', 'Profile'].map((label) => (

@@ -7,6 +7,8 @@ Thumbs.db
 .env
 .env.backup
 .env.production
+.env.local
+.env.*.local
 
 # IDE / Editor
 .phpactor.json
@@ -17,6 +19,9 @@ Thumbs.db
 /.phpunit.cache
 /.vscode
 /.zed
+*.swp
+*.swo
+*~
 
 # Auth
 /auth.json
@@ -30,9 +35,33 @@ Thumbs.db
 /public/hot
 /public/storage
 
-# Storage keys
+# Storage (except .gitignore files)
 /storage/*.key
 /storage/pail
+/storage/app/*
+!/storage/app/.gitignore
+!/storage/app/public/
+/storage/app/public/*
+!/storage/app/public/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Bootstrap cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Database
+*.sqlite
+*.sqlite-journal
+database.sqlite
 
 # Task/Checkpoint/Documentation files (dev-only, not needed in repo)
 CHECKPOINT_*.md
@@ -50,6 +79,33 @@ create-test-token.php
 test-checkout-api.php
 verify_properties.php
 
+# Testing
+.phpunit.cache
+/coverage
+/.phpunit.result.cache
+
+# NPM
+npm-debug.log
+yarn-error.log
+
 # Misc
 Homestead.json
 Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.vagrant
+.phpunit.result.cache
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache

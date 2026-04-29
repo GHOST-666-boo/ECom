@@ -38,9 +38,9 @@ class NewsletterConfirmationNotification extends Notification implements ShouldQ
         $unsubscribeUrl = url('/api/v1/newsletter/unsubscribe/' . $this->subscription->unsubscribe_token);
         
         return (new MailMessage)
-            ->subject('Welcome to Artisan Kala Newsletter')
+            ->subject('Welcome to Vriddhi Newsletter')
             ->greeting('Thank you for subscribing!')
-            ->line('You have successfully subscribed to the Artisan Kala newsletter.')
+            ->line('You have successfully subscribed to the Vriddhi newsletter.')
             ->line('You will receive updates about new products, special offers, and artisan stories.')
             ->line('If you wish to unsubscribe at any time, click the link below:')
             ->action('Unsubscribe', $unsubscribeUrl)

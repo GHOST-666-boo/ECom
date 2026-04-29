@@ -1,6 +1,6 @@
 # GitHub Actions CI/CD Deployment Checklist
 
-Use this checklist to set up and verify the CI/CD pipeline for Artisan Kala.
+Use this checklist to set up and verify the CI/CD pipeline for Vriddhi.
 
 ## Pre-Deployment Checklist
 
@@ -23,7 +23,7 @@ Use this checklist to set up and verify the CI/CD pipeline for Artisan Kala.
 - [ ] VPS provisioned with Ubuntu 24.04
 - [ ] Domain name configured and pointing to VPS
 - [ ] SSH access configured
-- [ ] Laravel application deployed at `/var/www/artisan-kala-api`
+- [ ] Laravel application deployed at `/var/www/vriddhi-api`
 - [ ] Nginx configured and running
 - [ ] PHP 8.3-FPM installed and running
 - [ ] MySQL 8.0 installed and running
@@ -63,7 +63,7 @@ Configure these in: Repository Settings > Secrets and variables > Actions > New 
 - [ ] `VERCEL_TOKEN` - Vercel authentication token
 - [ ] `VERCEL_ORG_ID` - From `.vercel/project.json`
 - [ ] `VERCEL_PROJECT_ID` - From `.vercel/project.json`
-- [ ] `VITE_API_BASE_URL` - Production API URL (e.g., `https://api.artisankala.com`)
+- [ ] `VITE_API_BASE_URL` - Production API URL (e.g., `https://api.vriddhi.com`)
 - [ ] `VITE_GOOGLE_CLIENT_ID` - Google OAuth client ID for production
 
 #### Backend Secrets
@@ -97,7 +97,7 @@ Configure these in: Repository Settings > Secrets and variables > Actions > New 
 - [ ] Check deployment logs for any errors
 
 ### 3. Verify Frontend Deployment
-- [ ] Visit frontend URL (e.g., `https://artisankala.com`)
+- [ ] Visit frontend URL (e.g., `https://vriddhi.com`)
 - [ ] Check homepage loads correctly
 - [ ] Verify API connection works
 - [ ] Test Google OAuth login
@@ -106,11 +106,11 @@ Configure these in: Repository Settings > Secrets and variables > Actions > New 
 
 ### 4. Verify Backend Deployment
 - [ ] SSH to VPS: `ssh deploy@your-vps-ip`
-- [ ] Check Laravel version: `cd /var/www/artisan-kala-api && php artisan --version`
+- [ ] Check Laravel version: `cd /var/www/vriddhi-api && php artisan --version`
 - [ ] Check queue workers: `sudo supervisorctl status`
 - [ ] Check PHP-FPM: `sudo systemctl status php8.3-fpm`
 - [ ] Check Nginx: `sudo systemctl status nginx`
-- [ ] Test API endpoint: `curl https://api.artisankala.com/health`
+- [ ] Test API endpoint: `curl https://api.vriddhi.com/health`
 - [ ] Check Laravel logs: `tail -f storage/logs/laravel.log`
 - [ ] Check Nginx logs: `sudo tail -f /var/log/nginx/error.log`
 
@@ -293,9 +293,9 @@ _______________________________________________________________
 - [GitHub Actions](https://github.com/YOUR_USERNAME/YOUR_REPO/actions)
 - [Vercel Dashboard](https://vercel.com/dashboard)
 - [VPS SSH]: `ssh deploy@your-vps-ip`
-- [Frontend URL]: https://artisankala.com
-- [Backend URL]: https://api.artisankala.com
-- [Admin Panel]: https://api.artisankala.com/admin
+- [Frontend URL]: https://vriddhi.com
+- [Backend URL]: https://api.vriddhi.com
+- [Admin Panel]: https://api.vriddhi.com/admin
 
 ---
 

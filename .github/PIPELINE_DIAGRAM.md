@@ -189,7 +189,7 @@
 │         └─> VPS_PORT (from secrets, default 22)             │
 │                                                              │
 │  2. Navigate to Project                                     │
-│     └─> cd /var/www/artisan-kala-api                        │
+│     └─> cd /var/www/vriddhi-api                        │
 │                                                              │
 │  3. Pull Latest Code                                        │
 │     └─> git pull origin main                                │

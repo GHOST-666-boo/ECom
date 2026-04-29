@@ -6,7 +6,7 @@ import AddressForm from '../components/AddressForm';
 import { getImageUrl } from '../lib/imageUrl';
 
 /**
- * CheckoutPage - Metallic Artisan (Oat Edition)
+ * CheckoutPage - Metallic Vriddhi (Oat Edition)
  * 7/5 grid: form col (shipping identity + payment method) + sticky order summary sidebar
  */
 export default function CheckoutPage() {
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
       const options = {
         key: razorpayKey,
         amount, currency,
-        name: 'Artisan Kala',
+        name: 'Vriddhi',
         description: `Order #${orderId}`,
         order_id: razorpay_order_id,
         handler: () => { clearCart(); navigate(`/orders/${orderId}`); },
@@ -351,7 +351,7 @@ export default function CheckoutPage() {
                             {item.product?.name || 'Unavailable Product'}
                           </p>
                           <p className="text-[10px] uppercase tracking-widest mt-1" style={{ color: '#7e766e', fontFamily: 'Manrope, sans-serif' }}>
-                            {item.product?.category?.name || 'Artisan Object'}
+                            {item.product?.category?.name || 'Handcrafted Object'}
                           </p>
                         </div>
                         <div className="flex justify-between items-baseline">

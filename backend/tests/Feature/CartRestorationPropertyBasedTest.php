@@ -33,7 +33,7 @@ class CartRestorationPropertyBasedTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 50: Failed Payment Restores Cart
+     * Feature: vriddhi-ecommerce, Property 50: Failed Payment Restores Cart
      * 
      * **Validates: Requirements 6.5**
      * 
@@ -146,7 +146,7 @@ class CartRestorationPropertyBasedTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 51: Out-of-Stock Items Skipped on Cart Restoration
+     * Feature: vriddhi-ecommerce, Property 51: Out-of-Stock Items Skipped on Cart Restoration
      * 
      * **Validates: Requirements 6.6**
      * 

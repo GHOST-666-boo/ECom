@@ -55,7 +55,7 @@
         </div>
         
         <div class="footer">
-            <p>&copy; {{ date('Y') }} Artisan Kala. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} Vriddhi. All rights reserved.</p>
         </div>
     </div>
 </body>

@@ -4,7 +4,7 @@ import useCartStore from '../stores/cartStore';
 import { getImageUrl } from '../lib/imageUrl';
 
 /**
- * Cart - Metallic Artisan (Oat Edition)
+ * Cart - Metallic Vriddhi (Oat Edition)
  * Editorial "Your Selection" header + item list + sticky summary sidebar
  */
 export default function Cart() {

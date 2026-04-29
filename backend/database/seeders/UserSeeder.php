@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         // Create 2 admin users
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin@artisankala.com',
+            'email' => 'admin@vriddhi.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'email_verified_at' => now(),
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@artisankala.com',
+            'email' => 'superadmin@vriddhi.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'email_verified_at' => now(),
@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info('Created 2 admin users and 18 customer users');
-        $this->command->info('Admin credentials: admin@artisankala.com / password');
+        $this->command->info('Admin credentials: admin@vriddhi.com / password');
         $this->command->info('Customer credentials: [name]@example.com / password');
     }
 }

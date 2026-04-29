@@ -13,7 +13,7 @@ class NewsletterPropertiesTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 95: Newsletter Email Format Validation
+     * Feature: vriddhi-ecommerce, Property 95: Newsletter Email Format Validation
      * 
      * **Validates: Requirements 16.2**
      * 
@@ -62,7 +62,7 @@ class NewsletterPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 96: Duplicate Newsletter Subscription Prevention
+     * Feature: vriddhi-ecommerce, Property 96: Duplicate Newsletter Subscription Prevention
      * 
      * **Validates: Requirements 16.4**
      * 
@@ -103,7 +103,7 @@ class NewsletterPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 97: Newsletter Confirmation Email Sent
+     * Feature: vriddhi-ecommerce, Property 97: Newsletter Confirmation Email Sent
      * 
      * **Validates: Requirements 16.5**
      * 
@@ -149,7 +149,7 @@ class NewsletterPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 98: Unique Signed Unsubscribe Token
+     * Feature: vriddhi-ecommerce, Property 98: Unique Signed Unsubscribe Token
      * 
      * **Validates: Requirements 16.6**
      * 
@@ -196,7 +196,7 @@ class NewsletterPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 99: Unsubscribe Token Validation
+     * Feature: vriddhi-ecommerce, Property 99: Unsubscribe Token Validation
      * 
      * **Validates: Requirements 16.8**
      * 
@@ -238,7 +238,7 @@ class NewsletterPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 100: Newsletter Operations Without Authentication
+     * Feature: vriddhi-ecommerce, Property 100: Newsletter Operations Without Authentication
      * 
      * **Validates: Requirements 16.9**
      * 
