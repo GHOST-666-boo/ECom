@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from '../lib/axios';
 
 /**
- * NewsletterForm - Metallic Artisan (Oat Edition)
+ * NewsletterForm - Metallic Vriddhi (Oat Edition)
  * Minimal underline input + dark pill button, used in footer
  */
 export default function NewsletterForm() {

@@ -56,7 +56,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property: Razorpay Order Creation Requires Valid Order ID
+     * Feature: vriddhi-ecommerce, Property: Razorpay Order Creation Requires Valid Order ID
      * 
      * For any Razorpay order creation request, the order_id must exist and belong to the authenticated user.
      * 
@@ -141,7 +141,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property: Razorpay Order Creation Only for Razorpay Payment Method
+     * Feature: vriddhi-ecommerce, Property: Razorpay Order Creation Only for Razorpay Payment Method
      * 
      * For any Razorpay order creation request, the order must have payment_method = 'razorpay'.
      * COD orders should not be able to create Razorpay orders.
@@ -204,7 +204,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property: Razorpay Order Amount Conversion to Paise
+     * Feature: vriddhi-ecommerce, Property: Razorpay Order Amount Conversion to Paise
      * 
      * For any Razorpay order creation, the amount should be converted from rupees to paise (multiply by 100).
      * The returned amount should be in paise (integer).
@@ -279,7 +279,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property: Razorpay Order Returns Order ID
+     * Feature: vriddhi-ecommerce, Property: Razorpay Order Returns Order ID
      * 
      * For any successful Razorpay order creation, the response should include a razorpay_order_id.
      * 
@@ -356,7 +356,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property: Razorpay Order Creation Requires Authentication
+     * Feature: vriddhi-ecommerce, Property: Razorpay Order Creation Requires Authentication
      * 
      * For any Razorpay order creation request without authentication, the request should fail with 401.
      * 

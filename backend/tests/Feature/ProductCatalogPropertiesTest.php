@@ -20,7 +20,7 @@ class ProductCatalogPropertiesTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 24: Product Filtering
+     * Feature: vriddhi-ecommerce, Property 24: Product Filtering
      * 
      * **Validates: Requirements 2.12**
      * 
@@ -81,7 +81,7 @@ class ProductCatalogPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 25: Cursor-Based Pagination
+     * Feature: vriddhi-ecommerce, Property 25: Cursor-Based Pagination
      * 
      * **Validates: Requirements 3.3, 9.5, 11.4**
      * 
@@ -131,7 +131,7 @@ class ProductCatalogPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 26: Eager Loading Prevents N+1 Queries
+     * Feature: vriddhi-ecommerce, Property 26: Eager Loading Prevents N+1 Queries
      * 
      * **Validates: Requirements 3.4, 11.2**
      * 
@@ -179,7 +179,7 @@ class ProductCatalogPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 27: Product Detail Completeness
+     * Feature: vriddhi-ecommerce, Property 27: Product Detail Completeness
      * 
      * **Validates: Requirements 3.5**
      * 
@@ -239,7 +239,7 @@ class ProductCatalogPropertiesTest extends TestCase
     }
 
     /**
-     * Feature: artisan-kala-ecommerce, Property 28: Active Products Only for Non-Admins
+     * Feature: vriddhi-ecommerce, Property 28: Active Products Only for Non-Admins
      * 
      * **Validates: Requirements 3.8**
      * 

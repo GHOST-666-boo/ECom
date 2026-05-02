@@ -1,6 +1,6 @@
 # CI/CD Pipeline Documentation
 
-This directory contains GitHub Actions workflows for automated testing and deployment of the Artisan Kala e-commerce platform.
+This directory contains GitHub Actions workflows for automated testing and deployment of the Vriddhi e-commerce platform.
 
 ## Overview
 
@@ -71,7 +71,7 @@ The CI/CD pipeline consists of two main workflows:
 3. **VPS Server**
    - Ubuntu 24.04 with Nginx, PHP 8.3-FPM, MySQL, Redis
    - SSH access configured
-   - Laravel application deployed at `/var/www/artisan-kala-api`
+   - Laravel application deployed at `/var/www/vriddhi-api`
    - Supervisor configured for queue workers
    - Deploy user with appropriate permissions
 
@@ -189,7 +189,7 @@ jobs:
 **Symptom:** Deployment succeeds but site doesn't work
 
 **Solution:**
-- SSH to VPS and check Laravel logs: `tail -f /var/www/artisan-kala-api/storage/logs/laravel.log`
+- SSH to VPS and check Laravel logs: `tail -f /var/www/vriddhi-api/storage/logs/laravel.log`
 - Check Nginx error logs: `sudo tail -f /var/log/nginx/error.log`
 - Verify .env file has correct production values
 - Check queue workers are running: `sudo supervisorctl status`
@@ -203,7 +203,7 @@ If automated deployment fails, you can deploy manually:
 ssh deploy@your-vps-ip
 
 # Navigate to project
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 
 # Pull latest code
 git pull origin main
@@ -231,7 +231,7 @@ If a deployment causes issues:
 1. **Immediate rollback:**
    ```bash
    ssh deploy@your-vps-ip
-   cd /var/www/artisan-kala-api
+   cd /var/www/vriddhi-api
    git reset --hard HEAD~1
    composer install --optimize-autoloader --no-dev
    php artisan migrate:rollback

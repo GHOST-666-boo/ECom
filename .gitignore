@@ -1,22 +1,36 @@
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# IDE
+# IDE / Editor
 .idea/
 .vscode/
 .kiro/
 *.swp
 *.swo
+*~
+.fleet/
+.nova/
+.zed/
 
 # Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Root-level test/task files (not needed in repo)
 TASK_*.md
 TASK-*.md
 test-*.js
 test-*.ps1
+test-*.php
 
 # Root-level docs (optional - remove if you want these in repo)
 Architecture_Document_Handicraft_Jewelry.*
@@ -26,7 +40,32 @@ Architecture_Document_Handicraft_Jewelry.*
 /composer.lock
 /vendor/
 
-# Stitch design reference (not needed in production)
+# Design reference folders (not needed in production)
 /stitch/
-/my-first-agent
-*.md
+/my-first-agent/
+
+# Temporary files
+*.tmp
+*.temp
+.cache
+
+# Environment files at root (if any)
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+dist/
+build/
+
+# Dependencies (should be in subfolders only)
+node_modules/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Backup files
+*.bak
+*.backup
+*~

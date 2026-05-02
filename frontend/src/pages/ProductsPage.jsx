@@ -5,7 +5,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import axios from '../lib/axios';
 
 /**
- * ProductsPage - Metallic Artisan (Oat Edition)
+ * ProductsPage - Metallic Vriddhi (Oat Edition)
  * Editorial header + minimalist pill filters + bento product grid
  */
 export default function ProductsPage() {
@@ -224,7 +224,7 @@ export default function ProductsPage() {
           to forge unique visions.
         </p>
         <a
-          href="mailto:hello@artisankala.com"
+          href="mailto:hello@vriddhi.com"
           className="inline-block px-10 py-4 text-sm tracking-[0.2em] uppercase font-medium transition-opacity hover:opacity-90"
           style={{
             background: '#463f38',

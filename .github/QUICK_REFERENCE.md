@@ -1,6 +1,6 @@
 # CI/CD Quick Reference
 
-Quick commands and checks for the Artisan Kala CI/CD pipeline.
+Quick commands and checks for the Vriddhi CI/CD pipeline.
 
 ## GitHub Actions Status
 
@@ -30,7 +30,7 @@ Actions > Deploy to Production > Run workflow
 
 ### Run Backend Tests
 ```bash
-cd artisan-kala-api
+cd vriddhi-api
 composer test
 ./vendor/bin/pint --test
 ./vendor/bin/phpstan analyse
@@ -38,7 +38,7 @@ composer test
 
 ### Run Frontend Build
 ```bash
-cd artisan-kala-frontend
+cd vriddhi-frontend
 npm run build
 ```
 
@@ -49,7 +49,7 @@ npm run build
 ssh deploy@your-vps-ip
 
 # Check Laravel version
-cd /var/www/artisan-kala-api && php artisan --version
+cd /var/www/vriddhi-api && php artisan --version
 
 # Check queue workers
 sudo supervisorctl status
@@ -64,7 +64,7 @@ sudo systemctl status nginx
 ### View Logs
 ```bash
 # Laravel logs
-tail -f /var/www/artisan-kala-api/storage/logs/laravel.log
+tail -f /var/www/vriddhi-api/storage/logs/laravel.log
 
 # Nginx error logs
 sudo tail -f /var/log/nginx/error.log
@@ -113,7 +113,7 @@ vercel promote PREVIOUS_DEPLOYMENT_URL
 ### Full Manual Deployment (Backend)
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 git pull origin main
 composer install --optimize-autoloader --no-dev
 php artisan migrate --force
@@ -127,7 +127,7 @@ sudo systemctl reload php8.3-fpm
 ### Quick Cache Clear (Backend)
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
@@ -137,7 +137,7 @@ php artisan view:clear
 ### Rebuild Cache (Backend)
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
@@ -148,7 +148,7 @@ php artisan view:cache
 ### Check Database Connection
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 php artisan tinker
 >>> DB::connection()->getPdo();
 ```
@@ -199,7 +199,7 @@ sudo supervisorctl status
 ### Rollback Last Deployment
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 
 # Revert to previous commit
 git reset --hard HEAD~1
@@ -222,7 +222,7 @@ sudo systemctl reload php8.3-fpm
 ### Clear All Caches
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 
 # Laravel caches
 php artisan cache:clear
@@ -252,16 +252,16 @@ git log --oneline -10
 ### Check Application Health
 ```bash
 # Test API endpoint
-curl https://api.artisankala.com/health
+curl https://api.vriddhi.com/health
 
 # Test frontend
-curl https://artisankala.com
+curl https://vriddhi.com
 ```
 
 ### Monitor Queue Jobs
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 
 # Check failed jobs
 php artisan queue:failed
@@ -278,7 +278,7 @@ php artisan queue:flush
 ### Check Response Times
 ```bash
 # API response time
-curl -w "@-" -o /dev/null -s https://api.artisankala.com/api/v1/products <<'EOF'
+curl -w "@-" -o /dev/null -s https://api.vriddhi.com/api/v1/products <<'EOF'
 time_namelookup:  %{time_namelookup}\n
 time_connect:  %{time_connect}\n
 time_starttransfer:  %{time_starttransfer}\n
@@ -289,7 +289,7 @@ EOF
 ### Check Database Performance
 ```bash
 ssh deploy@your-vps-ip
-cd /var/www/artisan-kala-api
+cd /var/www/vriddhi-api
 php artisan tinker
 >>> DB::enableQueryLog();
 >>> // Run some queries
@@ -316,8 +316,8 @@ alias deploy-watch='gh run watch'
 alias deploy-trigger='gh workflow run deploy.yml'
 
 # VPS commands (run after 'vps' alias)
-alias artisan='cd /var/www/artisan-kala-api && php artisan'
-alias logs='tail -f /var/www/artisan-kala-api/storage/logs/laravel.log'
+alias artisan='cd /var/www/vriddhi-api && php artisan'
+alias logs='tail -f /var/www/vriddhi-api/storage/logs/laravel.log'
 alias restart-workers='sudo supervisorctl restart laravel-worker:*'
 alias restart-php='sudo systemctl reload php8.3-fpm'
 ```
@@ -347,7 +347,7 @@ For major updates requiring downtime:
 1. **Enable maintenance mode:**
    ```bash
    ssh deploy@your-vps-ip
-   cd /var/www/artisan-kala-api
+   cd /var/www/vriddhi-api
    php artisan down --secret="maintenance-bypass-token"
    ```
 
@@ -360,7 +360,7 @@ For major updates requiring downtime:
 
 4. **Access during maintenance:**
    ```
-   https://api.artisankala.com/maintenance-bypass-token
+   https://api.vriddhi.com/maintenance-bypass-token
    ```
 
 ## Quick Links

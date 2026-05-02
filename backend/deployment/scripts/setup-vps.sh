@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ################################################################################
-# Artisan Kala API - VPS Setup Script
+# Vriddhi API - VPS Setup Script
 # 
-# This script automates the setup of a VPS server for the Artisan Kala Laravel API
+# This script automates the setup of a VPS server for the Vriddhi Laravel API
 # 
 # Requirements:
 # - Ubuntu 24.04 LTS
@@ -25,11 +25,11 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration variables (update these)
-DOMAIN="api.artisankala.com"
-APP_PATH="/var/www/artisan-kala-api"
+DOMAIN="api.vriddhi.com"
+APP_PATH="/var/www/vriddhi-api"
 DEPLOY_USER="deploy"
-DB_NAME="artisan_kala"
-DB_USER="artisan_kala_user"
+DB_NAME="vriddhi"
+DB_USER="vriddhi_user"
 DB_PASSWORD=""  # Will be prompted
 REDIS_PASSWORD=""  # Will be prompted
 EMAIL=""  # For Let's Encrypt
@@ -58,19 +58,19 @@ prompt_config() {
     print_info "Configuration Setup"
     echo ""
     
-    read -p "Enter domain name [api.artisankala.com]: " input_domain
+    read -p "Enter domain name [api.vriddhi.com]: " input_domain
     DOMAIN=${input_domain:-$DOMAIN}
     
-    read -p "Enter application path [/var/www/artisan-kala-api]: " input_path
+    read -p "Enter application path [/var/www/vriddhi-api]: " input_path
     APP_PATH=${input_path:-$APP_PATH}
     
     read -p "Enter deploy user [deploy]: " input_user
     DEPLOY_USER=${input_user:-$DEPLOY_USER}
     
-    read -p "Enter database name [artisan_kala]: " input_db
+    read -p "Enter database name [vriddhi]: " input_db
     DB_NAME=${input_db:-$DB_NAME}
     
-    read -p "Enter database user [artisan_kala_user]: " input_db_user
+    read -p "Enter database user [vriddhi_user]: " input_db_user
     DB_USER=${input_db_user:-$DB_USER}
     
     read -sp "Enter database password: " DB_PASSWORD
@@ -267,14 +267,14 @@ print_summary() {
     echo "  10. Copy Supervisor config to /etc/supervisor/conf.d/"
     echo "  11. Start workers: sudo supervisorctl reread && sudo supervisorctl update"
     echo ""
-    echo "Credentials saved to: /root/artisan-kala-credentials.txt"
+    echo "Credentials saved to: /root/vriddhi-credentials.txt"
     echo ""
 }
 
 save_credentials() {
     print_info "Saving credentials..."
-    cat > /root/artisan-kala-credentials.txt <<EOF
-Artisan Kala API - Server Credentials
+    cat > /root/vriddhi-credentials.txt <<EOF
+Vriddhi API - Server Credentials
 ======================================
 
 Database:
@@ -291,14 +291,14 @@ Deploy User: ${DEPLOY_USER}
 
 Generated: $(date)
 EOF
-    chmod 600 /root/artisan-kala-credentials.txt
-    print_success "Credentials saved to /root/artisan-kala-credentials.txt"
+    chmod 600 /root/vriddhi-credentials.txt
+    print_success "Credentials saved to /root/vriddhi-credentials.txt"
 }
 
 # Main execution
 main() {
     echo "=========================================="
-    echo "  Artisan Kala API - VPS Setup Script"
+    echo "  Vriddhi API - VPS Setup Script"
     echo "=========================================="
     echo ""
     

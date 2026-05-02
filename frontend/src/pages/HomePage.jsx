@@ -4,7 +4,7 @@ import AuthModal from '../components/AuthModal';
 import CategoryList from '../components/CategoryList';
 
 /**
- * HomePage - Metallic Artisan (Oat Edition)
+ * HomePage - Metallic Vriddhi (Oat Edition)
  * Mirrors the Stitch design: hero with editorial split,
  * bento featured grid, product gallery strip, newsletter CTA
  */
@@ -90,7 +90,7 @@ export default function HomePage() {
                     className="text-xs tracking-[0.3em] uppercase"
                     style={{ color: '#7e766e', fontFamily: 'Manrope, sans-serif' }}
                   >
-                    Artisan Collection
+                    Vriddhi Collection
                   </p>
                 </div>
               </div>

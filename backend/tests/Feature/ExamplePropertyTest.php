@@ -7,13 +7,13 @@ uses(RefreshDatabase::class);
 /**
  * Example Property-Based Test
  * 
- * This test demonstrates the property-based testing setup for the Artisan Kala platform.
+ * This test demonstrates the property-based testing setup for the Vriddhi platform.
  * It validates that the testing framework is correctly configured with 100 iterations.
  * 
  * **Validates: Testing Strategy**
  */
 
-// Feature: artisan-kala-ecommerce, Example: Property Test Configuration
+// Feature: vriddhi-ecommerce, Example: Property Test Configuration
 it('runs property tests with configured iterations', function () {
     $iterations = (int) env('PROPERTY_TEST_ITERATIONS', 100);
     
@@ -37,7 +37,7 @@ it('runs property tests with configured iterations', function () {
     expect($executedIterations)->toBe($iterations);
 });
 
-// Feature: artisan-kala-ecommerce, Example: Database Refresh
+// Feature: vriddhi-ecommerce, Example: Database Refresh
 it('can use database with RefreshDatabase trait', function () {
     // This test verifies that the RefreshDatabase trait is working
     // and the database is properly configured for testing

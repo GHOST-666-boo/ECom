@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# Artisan Kala API - Deployment Script
+# Vriddhi API - Deployment Script
 # 
 # This script handles deployment of updates to the Laravel API
 # 
@@ -21,7 +21,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-APP_PATH="/var/www/artisan-kala-api"
+APP_PATH="/var/www/vriddhi-api"
 BRANCH="main"
 
 # Functions
@@ -198,7 +198,7 @@ rollback() {
 # Main execution
 main() {
     echo "=========================================="
-    echo "  Artisan Kala API - Deployment"
+    echo "  Vriddhi API - Deployment"
     echo "=========================================="
     echo ""
     

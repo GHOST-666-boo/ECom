@@ -102,13 +102,13 @@ export default function ContactPage() {
                       Email
                     </p>
                     <a
-                      href="mailto:contact@artisankala.com"
+                      href="mailto:contact@vriddhi.com"
                       className="text-base transition-colors duration-200"
                       style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
                       onMouseEnter={(e) => (e.target.style.color = '#463f38')}
                       onMouseLeave={(e) => (e.target.style.color = '#4c3e25')}
                     >
-                      contact@artisankala.com
+                      contact@vriddhi.com
                     </a>
                   </div>
                 </div>
@@ -164,7 +164,7 @@ export default function ContactPage() {
                       className="text-base leading-relaxed"
                       style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
                     >
-                      123 Artisan Street<br />
+                      123 Vriddhi Street<br />
                       Mumbai, Maharashtra 400001<br />
                       India
                     </p>
