@@ -5,25 +5,46 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  PHP_VERSION: '8.4'
+  NODE_VERSION: '20'
+  DB_CONNECTION: mysql
+  DB_HOST: 127.0.0.1
+  DB_PORT: 3306
+  DB_DATABASE: vriddhi_test
+  DB_USERNAME: root
+  DB_PASSWORD: password
+  REDIS_HOST: 127.0.0.1
+  REDIS_PORT: 6379
+
 jobs:
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: vriddhi
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.DB_DATABASE }}
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-      
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
       redis:
         image: redis:7.0
         ports:
           - 6379:6379
-        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout code
@@ -32,9 +53,17 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ env.PHP_VERSION }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, redis
           coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: composer-
 
       - name: Copy .env
         working-directory: backend
@@ -50,34 +79,17 @@ jobs:
 
       - name: Run database migrations
         working-directory: backend
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: vriddhi
-          DB_USERNAME: root
-          DB_PASSWORD: password
-          REDIS_HOST: 127.0.0.1
-          REDIS_PORT: 6379
         run: php artisan migrate --force
 
       - name: Run tests
         working-directory: backend
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: vriddhi
-          DB_USERNAME: root
-          DB_PASSWORD: password
-          REDIS_HOST: 127.0.0.1
-          REDIS_PORT: 6379
-        run: php artisan test
+        run: php artisan test --parallel
 
   deploy-frontend:
+    name: Deploy Frontend (Vercel)
     needs: test
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -85,7 +97,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
@@ -101,6 +113,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel
+        id: vercel-deploy
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -110,9 +123,10 @@ jobs:
           vercel-args: '--prod'
 
   deploy-backend:
+    name: Deploy Backend (VPS)
     needs: test
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -120,44 +134,73 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          port: ${{ secrets.VPS_PORT }}
           script: |
-            cd /var/www/backend
-            
-            # Pull latest code
+            set -e
+            cd /var/www/vriddhi-api
+
+            echo "==> Pulling latest code..."
             git pull origin main
-            
-            # Install/update Composer dependencies
-            composer install --optimize-autoloader --no-dev --no-interaction
-            
-            # Run database migrations
+
+            echo "==> Installing Composer dependencies..."
+            composer install --optimize-autoloader --no-dev --no-interaction --no-progress
+
+            echo "==> Enabling maintenance mode..."
+            php artisan down --retry=15
+
+            echo "==> Running database migrations..."
             php artisan migrate --force
-            
-            # Clear and rebuild cache
-            php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
-            php artisan cache:clear
-            
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            
-            # Restart queue workers
-            sudo supervisorctl restart laravel-worker:*
-            
-            # Reload PHP-FPM
-            sudo systemctl reload php8.3-fpm
-            
-            # Verify deployment
+
+            echo "==> Rebuilding cache..."
+            php artisan optimize:clear
+            php artisan optimize
+
+            echo "==> Fixing permissions..."
+            sudo chown -R deploy:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
+
+            echo "==> Restarting queue workers..."
+            php artisan queue:restart
+            sudo supervisorctl restart laravel-worker
+
+            echo "==> Reloading PHP-FPM..."
+            sudo systemctl reload php8.4-fpm
+
+            echo "==> Disabling maintenance mode..."
+            php artisan up
+
+            echo "==> Verifying deployment..."
             php artisan --version
-            
-            echo "Deployment completed successfully!"
+            echo "✅ Deployment completed successfully!"
 
-      - name: Deployment notification
-        if: success()
-        run: echo "Backend deployed successfully to VPS"
-
-      - name: Deployment failed notification
+      - name: Bring app back up on failure
         if: failure()
-        run: echo "Backend deployment failed! Check logs for details"
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            cd /var/www/vriddhi-api
+            php artisan up || true
+            echo "App brought back online after failed deployment."
+
+  notify:
+    name: Notify Deployment Status
+    needs: [ deploy-frontend, deploy-backend ]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Deployment succeeded
+        if: ${{ needs.deploy-frontend.result == 'success' && needs.deploy-backend.result == 'success' }}
+        run: echo "✅ Full deployment succeeded — frontend (Vercel) + backend (VPS)"
+
+      - name: Deployment partially failed
+        if: ${{ needs.deploy-frontend.result != 'success' || needs.deploy-backend.result != 'success' }}
+        run: |
+          echo "❌ Deployment issue detected!"
+          echo "Frontend: ${{ needs.deploy-frontend.result }}"
+          echo "Backend:  ${{ needs.deploy-backend.result }}"
+          exit 1
