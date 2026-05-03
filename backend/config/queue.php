@@ -73,6 +73,15 @@ return [
             'after_commit' => false,
         ],
 
+        'valkey' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => env('VALKEY_QUEUE', 'default'),
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
         'deferred' => [
             'driver' => 'deferred',
         ],
