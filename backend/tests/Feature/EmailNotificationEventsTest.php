@@ -78,7 +78,9 @@ class EmailNotificationEventsTest extends TestCase
         $order = Order::factory()->create(['status' => 'confirmed']);
 
         $response = $this->actingAs($admin)->putJson("/api/v1/admin/orders/{$order->id}/status", [
-            'status' => 'shipped',
+            'status'          => 'shipped',
+            'tracking_number' => 'TRACK123456789',
+            'courier_name'    => 'BlueDart',
         ]);
 
         $response->assertStatus(200);

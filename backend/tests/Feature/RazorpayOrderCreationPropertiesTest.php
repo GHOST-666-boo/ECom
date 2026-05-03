@@ -22,6 +22,12 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
     {
         parent::setUp();
 
+        // Set Razorpay test credentials so the controller's credential check passes
+        config([
+            'services.razorpay.key_id'     => 'rzp_test_testkey123',
+            'services.razorpay.key_secret'  => 'test_secret_key_456',
+        ]);
+
         // Mock Razorpay API for testing
         $this->mockRazorpayApi();
     }

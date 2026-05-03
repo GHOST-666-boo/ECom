@@ -35,7 +35,9 @@ class CategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Categories retrieved successfully',
-            'data' => $categories,
+            'data' => [
+                'categories' => $categories,
+            ],
         ]);
     }
 }

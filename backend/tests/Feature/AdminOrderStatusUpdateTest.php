@@ -131,12 +131,14 @@ class AdminOrderStatusUpdateTest extends TestCase
 
         $response = $this->actingAs($this->admin)
             ->putJson("/api/v1/admin/orders/{$this->order->id}/status", [
-                'status' => 'shipped',
+                'status'          => 'shipped',
+                'tracking_number' => 'TRACK987654321',
+                'courier_name'    => 'Delhivery',
             ]);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('orders', [
-            'id' => $this->order->id,
+            'id'     => $this->order->id,
             'status' => 'shipped',
         ]);
     }

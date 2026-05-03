@@ -20,9 +20,9 @@ class CategoryFactory extends Factory
         $name = fake()->words(2, true);
         
         return [
-            'name' => ucwords($name),
-            'slug' => \Illuminate\Support\Str::slug($name),
-            'image' => null,
+            'name'      => ucwords($name),
+            'slug'      => \Illuminate\Support\Str::slug($name) . '-' . fake()->unique()->numberBetween(1000, 99999),
+            'image'     => null,
             'parent_id' => null,
             'is_active' => true,
         ];

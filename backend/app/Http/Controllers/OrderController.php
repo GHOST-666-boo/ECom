@@ -636,7 +636,7 @@ class OrderController extends Controller
         // Define valid status transitions
         $validTransitions = [
             'pending'    => ['confirmed', 'cancelled'],
-            'confirmed'  => ['processing', 'cancelled'],
+            'confirmed'  => ['processing', 'shipped', 'cancelled'], // Allow direct confirmed → shipped
             'processing' => ['shipped', 'cancelled'],
             'shipped'    => ['delivered'],
             'delivered'  => [],

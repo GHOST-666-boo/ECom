@@ -18,8 +18,10 @@ return new class extends Migration
             $table->enum('payment_status', ['pending', 'paid'])->default('pending')->after('courier_name');
         });
 
-        // Modify status enum to include 'processing'
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'");
+        // Modify status enum to include 'processing' (MySQL only — SQLite recreates the table via the initial migration)
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'");
+        }
     }
 
     /**
@@ -27,8 +29,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Revert status enum
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending', 'confirmed', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'");
+        // Revert status enum (MySQL only)
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending', 'confirmed', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'");
+        }
 
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn(['tracking_number', 'courier_name', 'payment_status']);

@@ -57,13 +57,18 @@ class OrderStatusManagementPropertiesTest extends TestCase
                     // Create a fresh order for each transition test
                     $order = Order::factory()->create([
                         'user_id' => $customer->id,
-                        'status' => $currentStatus,
+                        'status'  => $currentStatus,
                     ]);
+
+                    // Build payload — tracking_number required when shipping
+                    $payload = ['status' => $newStatus];
+                    if ($newStatus === 'shipped') {
+                        $payload['tracking_number'] = 'TRACK' . strtoupper(uniqid());
+                        $payload['courier_name']    = 'BlueDart';
+                    }
                     
                     $response = $this->actingAs($admin)
-                        ->putJson("/api/v1/admin/orders/{$order->id}/status", [
-                            'status' => $newStatus,
-                        ]);
+                        ->putJson("/api/v1/admin/orders/{$order->id}/status", $payload);
                     
                     $response->assertStatus(200);
                     $response->assertJson([

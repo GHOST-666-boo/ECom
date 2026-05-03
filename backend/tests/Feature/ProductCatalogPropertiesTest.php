@@ -148,14 +148,20 @@ class ProductCatalogPropertiesTest extends TestCase
             Product::query()->delete();
             Category::query()->delete();
 
-            $categories = Category::factory()->count(rand(3, 10))->create(['is_active' => true]);
+            $slugPrefix = uniqid('cat_' . $i . '_');
+            $categories = collect(range(1, rand(3, 10)))->map(fn($j) =>
+                Category::factory()->create([
+                    'is_active' => true,
+                    'slug'      => $slugPrefix . '_' . $j,
+                ])
+            );
             $productCount = rand(5, 20);
 
             // Create products with random categories
             foreach (range(1, $productCount) as $index) {
                 Product::factory()->create([
                     'category_id' => $categories->random()->id,
-                    'is_active' => true,
+                    'is_active'   => true,
                 ]);
             }
 

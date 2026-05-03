@@ -303,8 +303,9 @@ class EmailNotificationPropertiesTest extends TestCase
                     $this->assertGreaterThan(0, $item->price);
                 }
                 
-                // Verify total amount
-                $this->assertEquals($expectedTotal, $notification->order->total);
+                // Verify total amount (use delta to handle float precision drift
+                // between PHP arithmetic and database decimal(10,2) storage)
+                $this->assertEqualsWithDelta($expectedTotal, (float) $notification->order->total, 0.01);
                 
                 return true;
             }
