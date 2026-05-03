@@ -9,6 +9,17 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saved(function ($category) {
+            \Illuminate\Support\Facades\Cache::forget('categories_tree');
+        });
+
+        static::deleted(function ($category) {
+            \Illuminate\Support\Facades\Cache::forget('categories_tree');
+        });
+    }
+
     protected $fillable = [
         'name',
         'slug',
