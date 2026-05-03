@@ -15,23 +15,27 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create 2 admin users
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@vriddhi.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'email_verified_at' => now(),
-            'phone' => '9876543210',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@vriddhi.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+                'phone' => '9876543210',
+            ]
+        );
 
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@vriddhi.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'email_verified_at' => now(),
-            'phone' => '9876543211',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'superadmin@vriddhi.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+                'phone' => '9876543211',
+            ]
+        );
 
         // Create 18 customer users with realistic Indian names
         $customerNames = [
@@ -59,14 +63,16 @@ class UserSeeder extends Seeder
             $firstName = explode(' ', $name)[0];
             $email = strtolower(str_replace(' ', '.', $name)) . '@example.com';
             
-            User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => Hash::make('password'),
-                'role' => 'customer',
-                'email_verified_at' => fake()->boolean(90) ? now() : null, // 90% verified
-                'phone' => '98765432' . str_pad($index + 12, 2, '0', STR_PAD_LEFT),
-            ]);
+            User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name,
+                    'password' => Hash::make('password'),
+                    'role' => 'customer',
+                    'email_verified_at' => fake()->boolean(90) ? now() : null, // 90% verified
+                    'phone' => '98765432' . str_pad($index + 12, 2, '0', STR_PAD_LEFT),
+                ]
+            );
         }
 
         $this->command->info('Created 2 admin users and 18 customer users');
