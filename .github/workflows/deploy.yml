@@ -140,9 +140,8 @@ jobs:
 
             echo "==> Pulling latest code..."
             cd /var/www/ECom
-            git config user.email "deploy@vriddhi.app"
-            git config user.name "Deploy Bot"
-            git pull --ff-only origin main
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "==> Installing Composer dependencies..."
             cd /var/www/vriddhi-api
