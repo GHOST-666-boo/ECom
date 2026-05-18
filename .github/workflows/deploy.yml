@@ -158,8 +158,8 @@ jobs:
             php artisan optimize
 
             echo "==> Fixing permissions..."
-            chown -R deploy:www-data storage bootstrap/cache
-            chmod -R 775 storage bootstrap/cache
+            sudo chown -R deploy:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
 
             echo "==> Restarting queue workers..."
             php artisan queue:restart
