@@ -29,13 +29,17 @@ export default function CategoryList() {
       const response = await axios.get('/categories');
       
       if (response.data.success) {
-        setCategories(response.data.data);
+        // Now: response.data.categories (much cleaner!)
+        const categoriesData = response.data.categories || [];
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } else {
         setError('Failed to load categories');
+        setCategories([]);
       }
     } catch (err) {
       console.error('Error fetching categories:', err);
       setError('Failed to load categories. Please try again later.');
+      setCategories([]);
     } finally {
       setLoading(false);
     }

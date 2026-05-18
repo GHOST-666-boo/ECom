@@ -104,7 +104,7 @@ class OrderHistoryPropertiesTest extends TestCase
             
             $response->assertStatus(200);
             
-            $orders = $response->json('data.orders');
+            $orders = $response->json('orders');
             
             // Verify all returned orders belong to user1
             $this->assertCount($user1OrderCount, $orders);
@@ -118,7 +118,7 @@ class OrderHistoryPropertiesTest extends TestCase
             
             $response2->assertStatus(200);
             
-            $orders2 = $response2->json('data.orders');
+            $orders2 = $response2->json('orders');
             
             // Verify all returned orders belong to user2
             $this->assertCount($user2OrderCount, $orders2);
@@ -184,7 +184,7 @@ class OrderHistoryPropertiesTest extends TestCase
             
             $response->assertStatus(200);
             
-            $orderData = $response->json('data.order');
+            $orderData = $response->json('order');
             
             // Verify order_number is present
             $this->assertArrayHasKey('order_number', $orderData);
@@ -277,7 +277,7 @@ class OrderHistoryPropertiesTest extends TestCase
             
             $response->assertStatus(200);
             
-            $orderData = $response->json('data.order');
+            $orderData = $response->json('order');
             
             // Verify each item includes product information
             foreach ($orderData['items'] as $item) {
@@ -365,7 +365,7 @@ class OrderHistoryPropertiesTest extends TestCase
             
             $response->assertStatus(200);
             
-            $orderData = $response->json('data.order');
+            $orderData = $response->json('order');
             
             // Verify each item uses price snapshot, not current product price
             foreach ($orderData['items'] as $item) {
@@ -458,7 +458,7 @@ class OrderHistoryPropertiesTest extends TestCase
             
             $response->assertStatus(200);
             
-            $orderData = $response->json('data.order');
+            $orderData = $response->json('order');
             $addressSnapshot = $orderData['address_snapshot'];
             
             // Verify address snapshot matches original address, not modified address

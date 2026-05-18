@@ -28,7 +28,7 @@ class ImageStorageService
         $path = $directory . '/' . $filename;
         
         // Upload to configured storage disk
-        Storage::disk(config('filesystems.default'))->put($path, $encodedImage);
+        Storage::disk('r2')->put($path, (string) $encodedImage);
         
         return $path;
     }
@@ -61,7 +61,7 @@ class ImageStorageService
      */
     public function getPublicUrl(string $path): string
     {
-        return Storage::disk(config('filesystems.default'))->url($path);
+        return Storage::disk('r2')->url($path);
     }
 
     /**
@@ -83,7 +83,7 @@ class ImageStorageService
      */
     public function deleteImage(string $path): bool
     {
-        return Storage::disk(config('filesystems.default'))->delete($path);
+        return Storage::disk('r2')->delete($path);
     }
 
     /**
@@ -94,6 +94,6 @@ class ImageStorageService
      */
     public function deleteMultipleImages(array $paths): bool
     {
-        return Storage::disk(config('filesystems.default'))->delete($paths);
+        return Storage::disk('r2')->delete($paths);
     }
 }

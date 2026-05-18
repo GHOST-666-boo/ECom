@@ -90,15 +90,13 @@ class CheckoutFlowTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'success',
-                'data' => [
-                    'order' => [
-                        'id', 'order_number', 'status', 'total', 'payment_method'
-                    ]
+                'order' => [
+                    'id', 'order_number', 'status', 'total', 'payment_method'
                 ]
             ]);
 
-        $this->assertEquals('confirmed', $response->json('data.order.status'));
-        $this->assertEquals('cod', $response->json('data.order.payment_method'));
+        $this->assertEquals('confirmed', $response->json('order.status'));
+        $this->assertEquals('cod', $response->json('order.payment_method'));
     }
 
     public function test_user_can_view_order_history()
@@ -109,7 +107,7 @@ class CheckoutFlowTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data',
+                'orders',
                 'meta' => ['next_cursor', 'per_page']
             ]);
     }
@@ -130,7 +128,7 @@ class CheckoutFlowTest extends TestCase
                 'payment_method' => 'cod',
             ]);
 
-        $orderId = $orderResponse->json('data.order.id');
+        $orderId = $orderResponse->json('order.id');
 
         $response = $this->actingAs($this->user)
             ->getJson("/api/v1/orders/{$orderId}");
@@ -138,16 +136,14 @@ class CheckoutFlowTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data' => [
-                    'order' => [
-                        'id',
-                        'order_number',
-                        'status',
-                        'total',
-                        'address_snapshot',
-                        'items' => [
-                            '*' => ['id', 'quantity', 'price', 'product']
-                        ]
+                'order' => [
+                    'id',
+                    'order_number',
+                    'status',
+                    'total',
+                    'address_snapshot',
+                    'items' => [
+                        '*' => ['id', 'quantity', 'price', 'product']
                     ]
                 ]
             ]);
@@ -170,7 +166,7 @@ class CheckoutFlowTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $orderResponse->json('data.order.id');
+        $orderId = $orderResponse->json('order.id');
 
         // Cancel the order
         $response = $this->actingAs($this->user)
@@ -200,7 +196,7 @@ class CheckoutFlowTest extends TestCase
                 'payment_method' => 'cod',
             ]);
 
-        $orderId = $orderResponse->json('data.order.id');
+        $orderId = $orderResponse->json('order.id');
 
         // Try to cancel
         $response = $this->actingAs($this->user)

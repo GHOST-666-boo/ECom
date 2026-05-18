@@ -30,7 +30,7 @@ export default function ProductDetailPage() {
       setLoading(true); setError(null);
       const response = await axios.get(`/products/${slug}`);
       if (response.data?.success) {
-        setProduct(response.data.data?.product || response.data.data);
+        setProduct(response.data.product);  // Clean: response.data.product
       } else { setError('Product not found'); }
     } catch (err) {
       setError(err.response?.status === 404 ? 'Product not found' : 'Failed to load product.');

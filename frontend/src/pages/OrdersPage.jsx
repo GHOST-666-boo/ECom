@@ -40,7 +40,7 @@ export default function OrdersPage() {
       const response = await axiosInstance.get(url);
       
       if (response.data.success) {
-        const newOrders = response.data.data.orders;
+        const newOrders = response.data.orders;  // Clean: response.data.orders
         setOrders(prev => cursor ? [...prev, ...newOrders] : newOrders);
         setNextCursor(response.data.meta?.next_cursor || null);
       }

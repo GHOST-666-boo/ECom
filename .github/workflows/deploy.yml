@@ -135,12 +135,13 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             set -e
-            cd /var/www/vriddhi-api
 
             echo "==> Pulling latest code..."
+            cd /var/www/ECom
             git pull origin main
 
             echo "==> Installing Composer dependencies..."
+            cd /var/www/vriddhi-api
             composer install --optimize-autoloader --no-dev --no-interaction --no-progress
 
             echo "==> Enabling maintenance mode..."

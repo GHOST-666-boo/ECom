@@ -37,7 +37,7 @@ class CacheFallbackPropertiesTest extends TestCase
                 'success' => true,
                 'message' => 'Categories retrieved successfully',
             ])
-            ->assertJsonCount(1, 'data.categories');
+            ->assertJsonCount(1, 'categories');
     }
 
     /**
@@ -62,7 +62,7 @@ class CacheFallbackPropertiesTest extends TestCase
         Cache::flush();
         $cachedResponse = $this->getJson('/api/v1/categories');
         $cachedResponse->assertStatus(200);
-        $cachedData = $cachedResponse->json('data.categories') ?? [];
+        $cachedData = $cachedResponse->json('categories') ?? [];
 
         // Mock Cache to throw an exception
         Cache::shouldReceive('remember')
@@ -72,7 +72,7 @@ class CacheFallbackPropertiesTest extends TestCase
         // Second request - should fall back to database
         $fallbackResponse = $this->getJson('/api/v1/categories');
         $fallbackResponse->assertStatus(200);
-        $fallbackData = $fallbackResponse->json('data.categories') ?? [];
+        $fallbackData = $fallbackResponse->json('categories') ?? [];
 
         // Both responses should have the same structure and data
         $this->assertEquals(count($cachedData), count($fallbackData));

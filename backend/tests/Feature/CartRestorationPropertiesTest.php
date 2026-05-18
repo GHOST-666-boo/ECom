@@ -79,7 +79,7 @@ class CartRestorationPropertiesTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Verify cart is empty after order placement
         $this->assertEquals(0, CartItem::where('cart_id', $cart->id)->count());
@@ -170,7 +170,7 @@ class CartRestorationPropertiesTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Make the second product out of stock
         $outOfStockProduct->update(['stock' => 0]);
@@ -255,7 +255,7 @@ class CartRestorationPropertiesTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Simulate failed payment webhook
         $webhookPayload = [
@@ -330,7 +330,7 @@ class CartRestorationPropertiesTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Add the same product back to cart before payment fails
         CartItem::create([
@@ -408,7 +408,7 @@ class CartRestorationPropertiesTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Add the same product back to cart with quantity that would exceed stock
         CartItem::create([

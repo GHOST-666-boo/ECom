@@ -109,7 +109,7 @@ export default function CheckoutPage() {
         payment_method: paymentMethod,
       });
       if (response.data.success) {
-        const order = response.data.data.order;
+        const order = response.data.order;  // Clean: response.data.order
         if (paymentMethod === 'cod') { clearCart(); navigate(`/orders/${order.id}`); }
         else if (paymentMethod === 'razorpay') await handleRazorpayPayment(order.id);
       }

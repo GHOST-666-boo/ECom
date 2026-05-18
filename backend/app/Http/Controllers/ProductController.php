@@ -53,9 +53,7 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Products retrieved successfully',
-            'data' => [
-                'products' => $products->items(),
-            ],
+            'products' => $products->items(),  // Direct field
             'meta' => [
                 'next_cursor' => $products->nextCursor()?->encode(),
                 'per_page' => $products->perPage(),
@@ -96,9 +94,7 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Product retrieved successfully',
-            'data' => [
-                'product' => $product,
-            ],
+            'product' => $product,  // Direct field
         ]);
     }
 }

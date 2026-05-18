@@ -44,7 +44,7 @@ export default function ProductList() {
       if (cursor) params.append('cursor', cursor);
       const response = await axios.get(`/products?${params.toString()}`);
       if (response.data?.success) {
-        const newProducts = response.data.data?.products || response.data.data || [];
+        const newProducts = response.data.products || [];  // Clean: response.data.products
         setProducts(prev => cursor ? [...prev, ...newProducts] : newProducts);
         setNextCursor(response.data.meta?.next_cursor || null);
       } else {

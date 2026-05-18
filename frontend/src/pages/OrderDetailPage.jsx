@@ -290,7 +290,7 @@ export default function OrderDetailPage() {
       setLoading(true);
       setError(null);
       const res = await axiosInstance.get(`/orders/${id}`);
-      if (res.data.success) setOrder(res.data.data.order);
+      if (res.data.success) setOrder(res.data.order);  // Clean: res.data.order
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load order details');
     } finally {

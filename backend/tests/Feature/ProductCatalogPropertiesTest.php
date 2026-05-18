@@ -68,7 +68,7 @@ class ProductCatalogPropertiesTest extends TestCase
             $response = $this->getJson("/api/v1/products?category_id={$targetCategory->id}&min_price={$minPrice}&max_price={$maxPrice}");
 
             $response->assertStatus(200);
-            $products = $response->json('data.products');
+            $products = $response->json('products');
 
             // Verify all returned products match the filter criteria
             foreach ($products as $product) {
@@ -114,7 +114,7 @@ class ProductCatalogPropertiesTest extends TestCase
                     'meta' => ['next_cursor', 'per_page'],
                 ]);
 
-            $products = $response->json('data.products');
+            $products = $response->json('products');
             $perPage = $response->json('meta.per_page');
 
             // Verify per_page is 20
@@ -217,21 +217,19 @@ class ProductCatalogPropertiesTest extends TestCase
 
             $response->assertStatus(200)
                 ->assertJsonStructure([
-                    'data' => [
-                        'product' => [
-                            'id',
-                            'name',
-                            'slug',
-                            'description',
-                            'price',
-                            'stock',
-                            'images',
-                            'category',
-                        ],
+                    'product' => [
+                        'id',
+                        'name',
+                        'slug',
+                        'description',
+                        'price',
+                        'stock',
+                        'images',
+                        'category',
                     ],
                 ]);
 
-            $returnedProduct = $response->json('data.product');
+            $returnedProduct = $response->json('product');
 
             // Verify all required fields are present and not null
             $this->assertNotNull($returnedProduct['description']);
@@ -288,7 +286,7 @@ class ProductCatalogPropertiesTest extends TestCase
             $response = $this->get('/api/v1/products', ['Accept' => 'application/json']);
 
             $response->assertStatus(200);
-            $products = $response->json('data.products');
+            $products = $response->json('products');
 
             // Verify all returned products are active
             foreach ($products as $product) {
@@ -306,7 +304,7 @@ class ProductCatalogPropertiesTest extends TestCase
             $response = $this->actingAs($customer, 'sanctum')->get('/api/v1/products', ['Accept' => 'application/json']);
 
             $response->assertStatus(200);
-            $products = $response->json('data.products');
+            $products = $response->json('products');
 
             // Verify all returned products are active
             foreach ($products as $product) {
@@ -321,7 +319,7 @@ class ProductCatalogPropertiesTest extends TestCase
             $response = $this->actingAs($admin, 'sanctum')->get('/api/v1/products', ['Accept' => 'application/json']);
 
             $response->assertStatus(200);
-            $products = $response->json('data.products');
+            $products = $response->json('products');
 
             // Admin should see both active and inactive products
             $hasInactive = false;
