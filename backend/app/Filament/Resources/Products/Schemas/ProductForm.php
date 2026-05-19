@@ -79,6 +79,7 @@ class ProductForm
                     ->multiple()
                     ->disk(config('filesystems.default'))
                     ->directory('products')
+                    ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)
                     ->maxFiles(5)

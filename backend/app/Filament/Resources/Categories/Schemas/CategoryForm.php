@@ -42,6 +42,7 @@ class CategoryForm
                     ->image()
                     ->disk(config('filesystems.default'))
                     ->directory('categories')
+                    ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)
                     ->nullable()
