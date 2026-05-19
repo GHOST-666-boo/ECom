@@ -19,17 +19,18 @@ class ImageStorageService
     {
         // Read the image and strip EXIF metadata
         $image = Image::read($file->getRealPath());
-        
+
         // Encode the image without EXIF metadata
         $encodedImage = $image->encode();
-        
-        // Generate a unique filename
-        $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+
+        // Derive extension from the encoded format (don't trust client-provided extension)
+        $extension = $encodedImage->extension ?? 'jpg';
+        $filename = uniqid() . '_' . time() . '.' . $extension;
         $path = $directory . '/' . $filename;
-        
+
         // Upload to configured storage disk
         Storage::disk('r2')->put($path, (string) $encodedImage);
-        
+
         return $path;
     }
 

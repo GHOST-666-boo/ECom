@@ -142,7 +142,14 @@ export default function ProductList() {
               className="aspect-[3/4] overflow-hidden mb-6 relative"
               style={{ background: '#f6f3f2' }}
             >
-              {product.images && product.images.length > 0 ? (
+              {product.image_urls?.length > 0 ? (
+                <img
+                  src={product.image_urls[0]}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                />
+              ) : product.images && product.images.length > 0 ? (
                 <img
                   src={getImageUrl(product.images[0])}
                   alt={product.name}

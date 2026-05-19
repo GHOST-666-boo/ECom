@@ -10,6 +10,8 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $appends = ['image_urls'];
+
     protected $fillable = [
         'category_id',
         'name',
@@ -44,6 +46,23 @@ class Product extends Model
                 throw new \InvalidArgumentException('Stock quantity cannot be negative');
             }
         });
+    }
+
+    /**
+     * Get full R2 public URLs for product images.
+     */
+    protected function getImageUrlsAttribute(): array
+    {
+        if (!$this->images) {
+            return [];
+        }
+
+        return array_map(function ($path) {
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+            return \Illuminate\Support\Facades\Storage::disk('r2')->url($path);
+        }, $this->images);
     }
 
     /**

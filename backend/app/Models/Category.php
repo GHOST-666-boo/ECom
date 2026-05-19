@@ -9,6 +9,8 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $appends = ['image_url'];
+
     protected $fillable = [
         'name',
         'slug',
@@ -22,6 +24,20 @@ class Category extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get full R2 public URL for category image.
+     */
+    protected function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+        return \Illuminate\Support\Facades\Storage::disk('r2')->url($this->image);
     }
 
     /**

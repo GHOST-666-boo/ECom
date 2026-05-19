@@ -105,7 +105,12 @@ export default function OrdersPage() {
                         className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden"
                         style={{ background: '#eae7e7' }}
                       >
-                        {item.product?.images?.[0] ? (
+                        {item.product?.image_urls?.[0] ? (
+                          <img
+                            src={item.product.image_urls[0]}
+                            alt={item.product.name || 'Product'}
+                          />
+                        ) : item.product?.images?.[0] ? (
                           <img
                             src={getImageUrl(item.product.images[0])}
                             alt={item.product.name || 'Product'}

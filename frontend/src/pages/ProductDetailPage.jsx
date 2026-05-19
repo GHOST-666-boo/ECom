@@ -92,7 +92,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const images = product.images?.length > 0 ? product.images : [null];
+  const images = product.image_urls?.length > 0 ? product.image_urls : (product.images?.length > 0 ? product.images : [null]);
 
   return (
     <div style={{ background: '#fcf9f8' }} className="pb-24">

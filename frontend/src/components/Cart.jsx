@@ -124,7 +124,12 @@ export default function Cart() {
                   className="w-full md:w-44 aspect-square overflow-hidden flex-shrink-0"
                   style={{ background: '#eae7e7' }}
                 >
-                  {item.product?.images?.length > 0 ? (
+                  {item.product?.image_urls?.length > 0 ? (
+                    <img
+                      src={item.product.image_urls[0]}
+                      alt={item.product?.name || 'Product'}
+                    />
+                  ) : item.product?.images?.length > 0 ? (
                     <img
                       src={getImageUrl(item.product.images[0])}
                       alt={item.product?.name || 'Product'}
