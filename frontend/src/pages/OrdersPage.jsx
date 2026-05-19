@@ -40,7 +40,7 @@ export default function OrdersPage() {
       const response = await axiosInstance.get(url);
       
       if (response.data.success) {
-        const newOrders = response.data.data.orders;
+        const newOrders = response.data.orders;  // Clean: response.data.orders
         setOrders(prev => cursor ? [...prev, ...newOrders] : newOrders);
         setNextCursor(response.data.meta?.next_cursor || null);
       }
@@ -105,7 +105,12 @@ export default function OrdersPage() {
                         className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden"
                         style={{ background: '#eae7e7' }}
                       >
-                        {item.product?.images?.[0] ? (
+                        {item.product?.image_urls?.[0] ? (
+                          <img
+                            src={item.product.image_urls[0]}
+                            alt={item.product.name || 'Product'}
+                          />
+                        ) : item.product?.images?.[0] ? (
                           <img
                             src={getImageUrl(item.product.images[0])}
                             alt={item.product.name || 'Product'}

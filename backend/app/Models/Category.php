@@ -9,16 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected static function booted()
-    {
-        static::saved(function ($category) {
-            \Illuminate\Support\Facades\Cache::forget('categories_tree');
-        });
-
-        static::deleted(function ($category) {
-            \Illuminate\Support\Facades\Cache::forget('categories_tree');
-        });
-    }
+    protected $appends = ['image_url'];
 
     protected $fillable = [
         'name',
@@ -33,6 +24,20 @@ class Category extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get full R2 public URL for category image.
+     */
+    protected function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+        return \Illuminate\Support\Facades\Storage::disk('r2')->url($this->image);
     }
 
     /**

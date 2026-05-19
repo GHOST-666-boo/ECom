@@ -306,7 +306,7 @@ class AtomicStockDecrementPropertiesTest extends TestCase
             
             // Verify order was created with pending status
             $this->assertEquals(201, $response->status());
-            $this->assertEquals('pending', $response->json('data.order.status'));
+            $this->assertEquals('pending', $response->json('order.status'));
             
             // Verify stock was NOT decremented for Razorpay orders
             $product->refresh();

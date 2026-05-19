@@ -106,7 +106,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
 
-            $orderId = $orderResponse->json('data.order.id');
+            $orderId = $orderResponse->json('order.id');
 
             // Test 1: Valid order_id should succeed
             $response = $this->actingAs($user)
@@ -192,7 +192,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
                     'payment_method' => 'cod',
                 ]);
 
-            $codOrderId = $codOrderResponse->json('data.order.id');
+            $codOrderId = $codOrderResponse->json('order.id');
 
             // Attempt to create Razorpay order for COD order (should fail)
             $response = $this->actingAs($user)
@@ -260,8 +260,8 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
 
-            $orderId = $orderResponse->json('data.order.id');
-            $orderTotal = $orderResponse->json('data.order.total');
+            $orderId = $orderResponse->json('order.id');
+            $orderTotal = $orderResponse->json('order.total');
 
             // Create Razorpay order
             $response = $this->actingAs($user)
@@ -329,7 +329,7 @@ class RazorpayOrderCreationPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
 
-            $orderId = $orderResponse->json('data.order.id');
+            $orderId = $orderResponse->json('order.id');
 
             // Create Razorpay order
             $response = $this->actingAs($user)

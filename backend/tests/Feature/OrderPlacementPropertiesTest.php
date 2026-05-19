@@ -75,7 +75,7 @@ class OrderPlacementPropertiesTest extends TestCase
             $response->assertStatus(201);
             
             // Verify address snapshot contains all required fields
-            $addressSnapshot = $response->json('data.order.address_snapshot');
+            $addressSnapshot = $response->json('order.address_snapshot');
             $this->assertNotNull($addressSnapshot['name']);
             $this->assertNotNull($addressSnapshot['line1']);
             $this->assertNotNull($addressSnapshot['city']);
@@ -131,7 +131,7 @@ class OrderPlacementPropertiesTest extends TestCase
             
             $response->assertStatus(201);
             
-            $orderNumber = $response->json('data.order.order_number');
+            $orderNumber = $response->json('order.order_number');
             $year = date('Y');
             
             // Verify format: ORD-YYYYNNNNN
@@ -207,7 +207,7 @@ class OrderPlacementPropertiesTest extends TestCase
             
             $response->assertStatus(201);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             $orderItems = OrderItem::where('order_id', $orderId)->get();
             
             // Verify order items count matches cart items count
@@ -270,7 +270,7 @@ class OrderPlacementPropertiesTest extends TestCase
             
             $response->assertStatus(201);
             
-            $addressSnapshot = $response->json('data.order.address_snapshot');
+            $addressSnapshot = $response->json('order.address_snapshot');
             
             // Verify all address fields are present in snapshot
             $this->assertArrayHasKey('name', $addressSnapshot);
@@ -346,7 +346,7 @@ class OrderPlacementPropertiesTest extends TestCase
             
             $response->assertStatus(201);
             
-            $orderTotal = (float) $response->json('data.order.total');
+            $orderTotal = (float) $response->json('order.total');
             
             // Verify total matches sum of (quantity × price) with small delta for floating point
             $this->assertEqualsWithDelta(
@@ -404,7 +404,7 @@ class OrderPlacementPropertiesTest extends TestCase
             
             $response->assertStatus(201);
             
-            $orderStatus = $response->json('data.order.status');
+            $orderStatus = $response->json('order.status');
             
             // Verify status is 'pending' for Razorpay orders
             $this->assertEquals('pending', $orderStatus);
@@ -521,7 +521,7 @@ class OrderPlacementPropertiesTest extends TestCase
             // Note: Email notification is logged but not yet implemented
             // This test verifies the order is created successfully
             // Email implementation will be added in Phase 9
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             $this->assertNotNull($orderId);
             
             // Verify order exists in database
@@ -642,8 +642,8 @@ class OrderPlacementPropertiesTest extends TestCase
             
             $response->assertStatus(201);
             
-            $orderStatus = $response->json('data.order.status');
-            $paymentMethod = $response->json('data.order.payment_method');
+            $orderStatus = $response->json('order.status');
+            $paymentMethod = $response->json('order.payment_method');
             
             // Verify COD orders are immediately confirmed
             $this->assertEquals('cod', $paymentMethod);

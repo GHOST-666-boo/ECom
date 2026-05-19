@@ -87,7 +87,7 @@ class WebhookControllerTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
         $paymentId = 'pay_test123';
 
         // Verify order is pending
@@ -161,7 +161,7 @@ class WebhookControllerTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Create failed payment webhook
         $webhookPayload = [
@@ -268,7 +268,7 @@ class WebhookControllerTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
         $paymentId = 'pay_test123';
 
         // Create webhook payload
@@ -423,7 +423,7 @@ class WebhookControllerTest extends TestCase
                 'payment_method' => 'razorpay',
             ]);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
 
         // Verify cart is empty after order placement
         $this->assertEquals(0, CartItem::where('cart_id', $cart->id)->count());

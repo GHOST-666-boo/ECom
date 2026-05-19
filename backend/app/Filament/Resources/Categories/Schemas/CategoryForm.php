@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Models\Category;
+use App\Services\ImageStorageService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -41,10 +42,15 @@ class CategoryForm
                     ->image()
                     ->disk(config('filesystems.default'))
                     ->directory('categories')
+                    ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)
                     ->nullable()
-                    ->helperText('Upload category image (max 2MB, JPEG/PNG/WebP)'),
+                    ->helperText('Upload category image (max 2MB, JPEG/PNG/WebP). EXIF metadata will be stripped automatically.')
+                    ->saveUploadedFileUsing(function ($file) {
+                        $imageService = app(ImageStorageService::class);
+                        return $imageService->uploadImage($file, 'categories');
+                    }),
                 
                 Toggle::make('is_active')
                     ->label('Active')

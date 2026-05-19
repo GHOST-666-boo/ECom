@@ -26,7 +26,7 @@ class ProductCatalogTest extends TestCase
                 'success' => true,
                 'message' => 'Categories retrieved successfully',
             ])
-            ->assertJsonCount(1, 'data.categories');
+            ->assertJsonCount(1, 'categories');
 
         // Verify caching
         $this->assertTrue(Cache::has('categories_tree'));
@@ -60,7 +60,7 @@ class ProductCatalogTest extends TestCase
                 'success' => true,
                 'message' => 'Products retrieved successfully',
             ])
-            ->assertJsonCount(1, 'data.products')
+            ->assertJsonCount(1, 'products')
             ->assertJsonStructure([
                 'meta' => ['next_cursor', 'per_page'],
             ]);
@@ -76,7 +76,7 @@ class ProductCatalogTest extends TestCase
         $response = $this->getJson('/api/v1/products');
 
         $response->assertStatus(200)
-            ->assertJsonCount(1, 'data.products');
+            ->assertJsonCount(1, 'products');
     }
 
     public function test_it_returns_product_detail_by_slug()
@@ -94,11 +94,9 @@ class ProductCatalogTest extends TestCase
             ->assertJson([
                 'success' => true,
                 'message' => 'Product retrieved successfully',
-                'data' => [
-                    'product' => [
-                        'id' => $product->id,
-                        'slug' => 'test-product',
-                    ],
+                'product' => [
+                    'id' => $product->id,
+                    'slug' => 'test-product',
                 ],
             ]);
     }
@@ -133,7 +131,7 @@ class ProductCatalogTest extends TestCase
             ->getJson('/api/v1/products');
 
         $response->assertStatus(200)
-            ->assertJsonCount(2, 'data.products');
+            ->assertJsonCount(2, 'products');
     }
 
     public function test_it_eager_loads_category_relationship()

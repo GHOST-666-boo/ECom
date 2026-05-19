@@ -61,7 +61,7 @@ class RazorpayWebhookPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             
             // Create webhook payload
             $webhookPayload = [
@@ -138,7 +138,7 @@ class RazorpayWebhookPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             $paymentId = 'pay_' . uniqid();
             
             // Verify order is initially pending
@@ -217,7 +217,7 @@ class RazorpayWebhookPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             
             // Verify order is initially pending
             $order = Order::find($orderId);
@@ -297,7 +297,7 @@ class RazorpayWebhookPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             $paymentId = 'pay_' . uniqid();
             
             // Create webhook with sensitive data (simulating real Razorpay webhook)
@@ -385,7 +385,7 @@ class RazorpayWebhookPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             $paymentId = 'pay_' . uniqid();
             
             // Create webhook payload
@@ -481,7 +481,7 @@ class RazorpayWebhookPropertiesTest extends TestCase
                     'payment_method' => 'razorpay',
                 ]);
             
-            $orderId = $response->json('data.order.id');
+            $orderId = $response->json('order.id');
             
             // Create webhook payload
             $webhookPayload = [

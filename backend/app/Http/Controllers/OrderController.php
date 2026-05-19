@@ -37,9 +37,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Orders retrieved successfully',
-            'data' => [
-                'orders' => $orders->items(),
-            ],
+            'orders' => $orders->items(),  // Direct field
             'meta' => [
                 'next_cursor' => $orders->nextCursor()?->encode(),
                 'per_page' => $orders->perPage(),
@@ -76,35 +74,33 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order retrieved successfully',
-            'data' => [
-                'order' => [
-                    'id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'status' => $order->status,
-                    'payment_method' => $order->payment_method,
-                    'payment_id' => $order->payment_id,
-                    'payment_status' => $order->payment_status,
-                    'tracking_number' => $order->tracking_number,
-                    'courier_name' => $order->courier_name,
-                    'total' => $order->total,
-                    'address_snapshot' => $order->address_snapshot,
-                    'items' => $order->orderItems->map(function ($item) {
-                        return [
-                            'id' => $item->id,
-                            'product_id' => $item->product_id,
-                            'quantity' => $item->quantity,
-                            'price' => $item->price,
-                            'product' => $item->product ? [
-                                'id' => $item->product->id,
-                                'name' => $item->product->name,
-                                'slug' => $item->product->slug,
-                                'images' => $item->product->images,
-                            ] : null,
-                        ];
-                    }),
-                    'created_at' => $order->created_at,
-                    'updated_at' => $order->updated_at,
-                ],
+            'order' => [  // Direct field
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'status' => $order->status,
+                'payment_method' => $order->payment_method,
+                'payment_id' => $order->payment_id,
+                'payment_status' => $order->payment_status,
+                'tracking_number' => $order->tracking_number,
+                'courier_name' => $order->courier_name,
+                'total' => $order->total,
+                'address_snapshot' => $order->address_snapshot,
+                'items' => $order->orderItems->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'product' => $item->product ? [
+                            'id' => $item->product->id,
+                            'name' => $item->product->name,
+                            'slug' => $item->product->slug,
+                            'images' => $item->product->images,
+                        ] : null,
+                    ];
+                }),
+                'created_at' => $order->created_at,
+                'updated_at' => $order->updated_at,
             ],
         ], 200);
     }
@@ -290,31 +286,29 @@ class OrderController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order placed successfully',
-                'data' => [
-                    'order' => [
-                        'id' => $order->id,
-                        'order_number' => $order->order_number,
-                        'status' => $order->status,
-                        'payment_method' => $order->payment_method,
-                        'total' => $order->total,
-                        'address_snapshot' => $order->address_snapshot,
-                        'items' => $order->orderItems->map(function ($item) {
-                            return [
-                                'id' => $item->id,
-                                'product_id' => $item->product_id,
-                                'quantity' => $item->quantity,
-                                'price' => $item->price,
-                                'product' => $item->product ? [
-                                    'id' => $item->product->id,
-                                    'name' => $item->product->name,
-                                    'slug' => $item->product->slug,
-                                    'images' => $item->product->images,
-                                ] : null,
-                            ];
-                        }),
-                        'created_at' => $order->created_at,
-                        'updated_at' => $order->updated_at,
-                    ],
+                'order' => [  // Direct field
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'status' => $order->status,
+                    'payment_method' => $order->payment_method,
+                    'total' => $order->total,
+                    'address_snapshot' => $order->address_snapshot,
+                    'items' => $order->orderItems->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'quantity' => $item->quantity,
+                            'price' => $item->price,
+                            'product' => $item->product ? [
+                                'id' => $item->product->id,
+                                'name' => $item->product->name,
+                                'slug' => $item->product->slug,
+                                'images' => $item->product->images,
+                            ] : null,
+                        ];
+                    }),
+                    'created_at' => $order->created_at,
+                    'updated_at' => $order->updated_at,
                 ],
             ], 201);
         } catch (\Illuminate\Database\QueryException $e) {

@@ -19,17 +19,18 @@ class ImageStorageService
     {
         // Read the image and strip EXIF metadata
         $image = Image::read($file->getRealPath());
-        
+
         // Encode the image without EXIF metadata
         $encodedImage = $image->encode();
-        
-        // Generate a unique filename
-        $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+
+        // Derive extension from the encoded format (don't trust client-provided extension)
+        $extension = $encodedImage->extension ?? 'jpg';
+        $filename = uniqid() . '_' . time() . '.' . $extension;
         $path = $directory . '/' . $filename;
-        
+
         // Upload to configured storage disk
-        Storage::disk(config('filesystems.default'))->put($path, $encodedImage);
-        
+        Storage::disk('r2')->put($path, (string) $encodedImage);
+
         return $path;
     }
 
@@ -61,7 +62,7 @@ class ImageStorageService
      */
     public function getPublicUrl(string $path): string
     {
-        return Storage::disk(config('filesystems.default'))->url($path);
+        return Storage::disk('r2')->url($path);
     }
 
     /**
@@ -83,7 +84,7 @@ class ImageStorageService
      */
     public function deleteImage(string $path): bool
     {
-        return Storage::disk(config('filesystems.default'))->delete($path);
+        return Storage::disk('r2')->delete($path);
     }
 
     /**
@@ -94,6 +95,6 @@ class ImageStorageService
      */
     public function deleteMultipleImages(array $paths): bool
     {
-        return Storage::disk(config('filesystems.default'))->delete($paths);
+        return Storage::disk('r2')->delete($paths);
     }
 }

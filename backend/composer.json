@@ -7,15 +7,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "aws/aws-sdk-php": "^3.374",
+        "aws/aws-sdk-php": "^3.381",
+        "fakerphp/faker": "^1.23",
         "filament/filament": "~5.0",
         "google/apiclient": "^2.19",
         "intervention/image-laravel": "^1.5",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",
-        "razorpay/razorpay": "^2.9",
-        "fakerphp/faker": "^1.23"
+        "league/flysystem-aws-s3-v3": "3.0",
+        "razorpay/razorpay": "^2.9"
     },
     "require-dev": {
         "laravel/pail": "^1.2.5",

@@ -29,13 +29,17 @@ export default function CategoryList() {
       const response = await axios.get('/categories');
       
       if (response.data.success) {
-        setCategories(response.data.data);
+        // Now: response.data.categories (much cleaner!)
+        const categoriesData = response.data.categories || [];
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } else {
         setError('Failed to load categories');
+        setCategories([]);
       }
     } catch (err) {
       console.error('Error fetching categories:', err);
       setError('Failed to load categories. Please try again later.');
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -85,9 +89,9 @@ export default function CategoryList() {
           className="bg-[#f6f3f0] overflow-hidden group transition-colors hover:bg-[#f2ece5]"
         >
           <div className="aspect-square overflow-hidden p-6">
-            {category.image && !imageErrors[category.id] ? (
+            {(category.image_url || category.image) && !imageErrors[category.id] ? (
               <img
-                src={getImageUrl(category.image)}
+                src={category.image_url || getImageUrl(category.image)}
                 alt={category.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"

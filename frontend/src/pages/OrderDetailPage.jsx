@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axiosInstance from '../lib/axios';
+import { getImageUrl } from '../lib/imageUrl';
 
 // ─── Courier tracking links ───────────────────────────────────────────────────
 const COURIER_LINKS = {
@@ -290,7 +291,7 @@ export default function OrderDetailPage() {
       setLoading(true);
       setError(null);
       const res = await axiosInstance.get(`/orders/${id}`);
-      if (res.data.success) setOrder(res.data.data.order);
+      if (res.data.success) setOrder(res.data.order);  // Clean: res.data.order
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load order details');
     } finally {
@@ -400,8 +401,10 @@ export default function OrderDetailPage() {
                   width: '72px', height: '72px', borderRadius: '10px',
                   overflow: 'hidden', background: '#f3f4f6', flexShrink: 0,
                 }}>
-                  {item.product?.images?.[0] ? (
-                    <img src={item.product.images[0]} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {item.product?.image_urls?.[0] ? (
+                    <img src={item.product.image_urls[0]} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : item.product?.images?.[0] ? (
+                    <img src={getImageUrl(item.product.images[0])} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '1.5rem' }}>🖼</div>
                   )}

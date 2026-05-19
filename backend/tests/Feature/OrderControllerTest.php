@@ -108,18 +108,16 @@ class OrderControllerTest extends TestCase
                 'message' => 'Order placed successfully',
             ])
             ->assertJsonStructure([
-                'data' => [
-                    'order' => [
-                        'id',
-                        'order_number',
-                        'status',
-                        'payment_method',
-                        'total',
-                        'address_snapshot',
-                        'items',
-                        'created_at',
-                        'updated_at',
-                    ],
+                'order' => [
+                    'id',
+                    'order_number',
+                    'status',
+                    'payment_method',
+                    'total',
+                    'address_snapshot',
+                    'items',
+                    'created_at',
+                    'updated_at',
                 ],
             ]);
 
@@ -153,7 +151,7 @@ class OrderControllerTest extends TestCase
 
         $response->assertStatus(201);
 
-        $orderNumber = $response->json('data.order.order_number');
+        $orderNumber = $response->json('order.order_number');
         $year = date('Y');
 
         // Verify format: ORD-YYYYNNNNN
@@ -185,7 +183,7 @@ class OrderControllerTest extends TestCase
         $response->assertStatus(201);
 
         // Expected total: (2 * 100) + (3 * 50) = 350
-        $this->assertEquals(350.00, $response->json('data.order.total'));
+        $this->assertEquals(350.00, $response->json('order.total'));
     }
 
     public function test_address_snapshot_is_stored_correctly(): void
@@ -198,7 +196,7 @@ class OrderControllerTest extends TestCase
 
         $response->assertStatus(201);
 
-        $addressSnapshot = $response->json('data.order.address_snapshot');
+        $addressSnapshot = $response->json('order.address_snapshot');
 
         $this->assertEquals($this->address->name, $addressSnapshot['name']);
         $this->assertEquals($this->address->line1, $addressSnapshot['line1']);
@@ -218,11 +216,9 @@ class OrderControllerTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJson([
-                'data' => [
-                    'order' => [
-                        'status' => 'pending',
-                        'payment_method' => 'razorpay',
-                    ],
+                'order' => [
+                    'status' => 'pending',
+                    'payment_method' => 'razorpay',
                 ],
             ]);
     }
@@ -332,7 +328,7 @@ class OrderControllerTest extends TestCase
 
         $response->assertStatus(201);
 
-        $orderId = $response->json('data.order.id');
+        $orderId = $response->json('order.id');
         $orderItem = OrderItem::where('order_id', $orderId)->first();
 
         // Verify price snapshot matches current product price
@@ -355,7 +351,7 @@ class OrderControllerTest extends TestCase
                 'payment_method' => 'cod',
             ]);
 
-        $orderNumber1 = $response1->json('data.order.order_number');
+        $orderNumber1 = $response1->json('order.order_number');
 
         // Add items back to cart for second order
         CartItem::create([
@@ -371,7 +367,7 @@ class OrderControllerTest extends TestCase
                 'payment_method' => 'cod',
             ]);
 
-        $orderNumber2 = $response2->json('data.order.order_number');
+        $orderNumber2 = $response2->json('order.order_number');
 
         // Extract sequence numbers
         $seq1 = (int) substr($orderNumber1, -5);
@@ -414,10 +410,8 @@ class OrderControllerTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJson([
-                'data' => [
-                    'order' => [
-                        'status' => 'pending',
-                    ],
+                'order' => [
+                    'status' => 'pending',
                 ],
             ]);
 
@@ -463,16 +457,14 @@ class OrderControllerTest extends TestCase
                 'message' => 'Orders retrieved successfully',
             ])
             ->assertJsonStructure([
-                'data' => [
-                    'orders' => [
-                        '*' => [
-                            'id',
-                            'order_number',
-                            'status',
-                            'total',
-                            'created_at',
-                            'updated_at',
-                        ],
+                'orders' => [
+                    '*' => [
+                        'id',
+                        'order_number',
+                        'status',
+                        'total',
+                        'created_at',
+                        'updated_at',
                     ],
                 ],
                 'meta' => [
@@ -482,7 +474,7 @@ class OrderControllerTest extends TestCase
             ]);
 
         // Verify only user's orders are returned
-        $orders = $response->json('data.orders');
+        $orders = $response->json('orders');
         $this->assertCount(2, $orders);
         $this->assertEquals('ORD-202400002', $orders[0]['order_number']); // Most recent first
         $this->assertEquals('ORD-202400001', $orders[1]['order_number']);
@@ -508,7 +500,7 @@ class OrderControllerTest extends TestCase
         $this->assertNotNull($response->json('meta.next_cursor'));
 
         // Verify exactly 20 orders returned
-        $this->assertCount(20, $response->json('data.orders'));
+        $this->assertCount(20, $response->json('orders'));
     }
 
     public function test_unauthenticated_user_cannot_view_order_history(): void
@@ -551,39 +543,35 @@ class OrderControllerTest extends TestCase
             ->assertJson([
                 'success' => true,
                 'message' => 'Order retrieved successfully',
-                'data' => [
-                    'order' => [
-                        'id' => $order->id,
-                        'order_number' => 'ORD-202400001',
-                        'status' => 'confirmed',
-                        'payment_method' => 'cod',
-                        'total' => 200.00,
-                        'address_snapshot' => [
-                            'name' => 'John Doe',
-                            'line1' => '123 Main St',
-                            'line2' => 'Apt 4',
-                            'city' => 'Mumbai',
-                            'state' => 'Maharashtra',
-                            'pincode' => '400001',
-                        ],
+                'order' => [
+                    'id' => $order->id,
+                    'order_number' => 'ORD-202400001',
+                    'status' => 'confirmed',
+                    'payment_method' => 'cod',
+                    'total' => 200.00,
+                    'address_snapshot' => [
+                        'name' => 'John Doe',
+                        'line1' => '123 Main St',
+                        'line2' => 'Apt 4',
+                        'city' => 'Mumbai',
+                        'state' => 'Maharashtra',
+                        'pincode' => '400001',
                     ],
                 ],
             ])
             ->assertJsonStructure([
-                'data' => [
-                    'order' => [
-                        'items' => [
-                            '*' => [
+                'order' => [
+                    'items' => [
+                        '*' => [
+                            'id',
+                            'product_id',
+                            'quantity',
+                            'price',
+                            'product' => [
                                 'id',
-                                'product_id',
-                                'quantity',
-                                'price',
-                                'product' => [
-                                    'id',
-                                    'name',
-                                    'slug',
-                                    'images',
-                                ],
+                                'name',
+                                'slug',
+                                'images',
                             ],
                         ],
                     ],
@@ -615,7 +603,7 @@ class OrderControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Verify order item uses price snapshot (100.00), not current price (150.00)
-        $items = $response->json('data.order.items');
+        $items = $response->json('order.items');
         $this->assertEquals(100.00, $items[0]['price']);
     }
 
@@ -646,7 +634,7 @@ class OrderControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Verify order uses address snapshot, not current address
-        $addressSnapshot = $response->json('data.order.address_snapshot');
+        $addressSnapshot = $response->json('order.address_snapshot');
         $this->assertEquals('123 Old Street', $addressSnapshot['line1']);
         $this->assertEquals('Mumbai', $addressSnapshot['city']);
     }
@@ -712,7 +700,7 @@ class OrderControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Verify product information is included
-        $items = $response->json('data.order.items');
+        $items = $response->json('order.items');
         $this->assertNotNull($items[0]['product']);
         $this->assertEquals($this->product->id, $items[0]['product']['id']);
         $this->assertEquals($this->product->name, $items[0]['product']['name']);

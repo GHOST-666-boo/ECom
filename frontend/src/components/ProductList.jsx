@@ -44,7 +44,7 @@ export default function ProductList() {
       if (cursor) params.append('cursor', cursor);
       const response = await axios.get(`/products?${params.toString()}`);
       if (response.data?.success) {
-        const newProducts = response.data.data?.products || response.data.data || [];
+        const newProducts = response.data.products || [];  // Clean: response.data.products
         setProducts(prev => cursor ? [...prev, ...newProducts] : newProducts);
         setNextCursor(response.data.meta?.next_cursor || null);
       } else {
@@ -142,7 +142,14 @@ export default function ProductList() {
               className="aspect-[3/4] overflow-hidden mb-6 relative"
               style={{ background: '#f6f3f2' }}
             >
-              {product.images && product.images.length > 0 ? (
+              {product.image_urls?.length > 0 ? (
+                <img
+                  src={product.image_urls[0]}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                />
+              ) : product.images && product.images.length > 0 ? (
                 <img
                   src={getImageUrl(product.images[0])}
                   alt={product.name}

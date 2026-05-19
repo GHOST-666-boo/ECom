@@ -21,9 +21,14 @@ export default function ProductsPage() {
   const fetchCategories = async () => {
     try {
       const response = await axios.get('/categories');
-      if (response.data.success) setCategories(response.data.data);
+      if (response.data.success) {
+        // Clean: response.data.categories
+        const categoriesData = response.data.categories || [];
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+      }
     } catch (err) {
       console.error('Error fetching categories:', err);
+      setCategories([]);
     }
   };
 
