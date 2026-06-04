@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../lib/axios';
 import AddressForm from './AddressForm';
+import LoadingSpinner from './ui/LoadingSpinner';
 
 /**
  * AddressManager Component
@@ -97,11 +98,7 @@ export default function AddressManager() {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {

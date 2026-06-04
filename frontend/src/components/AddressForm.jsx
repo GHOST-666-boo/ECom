@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import axiosInstance from '../lib/axios';
+import useFormState from '../hooks/useFormState';
+import { setApiErrors } from '../lib/apiError';
+import FormField from './ui/FormField';
+import FormAlert from './ui/FormAlert';
 
 /**
  * AddressForm Component
@@ -13,7 +17,9 @@ import axiosInstance from '../lib/axios';
  * Requirements: 13.2, 13.3, 13.4, 13.5, 13.8
  */
 export default function AddressForm({ address, onSuccess, onCancel }) {
-  const [formData, setFormData] = useState({
+  const {
+    formData, setFormData, errors, setErrors, isLoading, setIsLoading, handleChange,
+  } = useFormState({
     name: '',
     line1: '',
     line2: '',
@@ -22,8 +28,6 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
     pincode: '',
     is_default: false,
   });
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
 
   // Populate form if editing
   useEffect(() => {
@@ -38,30 +42,10 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
         is_default: address.is_default || false,
       });
     }
-  }, [address]);
-
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-    // Clear error for this field
-    if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-  };
+  }, [address, setFormData]);
 
   // Validate pincode format (6 digits)
-  const validatePincode = (pincode) => {
-    const pincodeRegex = /^[0-9]{6}$/;
-    return pincodeRegex.test(pincode);
-  };
+  const validatePincode = (pincode) => /^[0-9]{6}$/.test(pincode);
 
   // Handle form submit
   const handleSubmit = async (e) => {
@@ -69,23 +53,10 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
     
     // Client-side validation
     const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    
-    if (!formData.line1.trim()) {
-      newErrors.line1 = 'Address line 1 is required';
-    }
-    
-    if (!formData.city.trim()) {
-      newErrors.city = 'City is required';
-    }
-    
-    if (!formData.state.trim()) {
-      newErrors.state = 'State is required';
-    }
-    
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.line1.trim()) newErrors.line1 = 'Address line 1 is required';
+    if (!formData.city.trim()) newErrors.city = 'City is required';
+    if (!formData.state.trim()) newErrors.state = 'State is required';
     if (!formData.pincode.trim()) {
       newErrors.pincode = 'Pincode is required';
     } else if (!validatePincode(formData.pincode)) {
@@ -98,15 +69,13 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
     }
 
     try {
-      setSubmitting(true);
+      setIsLoading(true);
       setErrors({});
       
       let response;
       if (address) {
-        // Update existing address
         response = await axiosInstance.put(`/user/addresses/${address.id}`, formData);
       } else {
-        // Create new address
         response = await axiosInstance.post('/user/addresses', formData);
       }
       
@@ -114,27 +83,15 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
         onSuccess();
       }
     } catch (err) {
-      // Handle validation errors from API
-      if (err.response?.data?.errors) {
-        setErrors(err.response.data.errors);
-      } else {
-        setErrors({
-          general: err.response?.data?.message || 'Failed to save address',
-        });
-      }
+      setApiErrors(err, setErrors, 'Failed to save address');
     } finally {
-      setSubmitting(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* General error */}
-      {errors.general && (
-        <div className="bg-[#fdeceb] text-[#ba1a1a] px-4 py-3">
-          {errors.general}
-        </div>
-      )}
+      <FormAlert type="error" message={errors.general} />
 
       {/* Name field */}
       <div>
@@ -238,26 +195,15 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
       </div>
 
       {/* Pincode field */}
-      <div>
-        <label htmlFor="pincode" className="block text-xs font-medium text-[#5b5149] mb-1 uppercase tracking-widest">
-          Pincode <span className="text-[#ba1a1a]">*</span>
-        </label>
-        <input
-          type="text"
-          id="pincode"
-          name="pincode"
-          value={formData.pincode}
-          onChange={handleChange}
-          maxLength={6}
-          className={`w-full px-1 py-2 bg-transparent border-0 border-b-2 focus:outline-none ${
-            errors.pincode ? 'border-[#ba1a1a]' : 'border-[#cec5bc] focus:border-[#745b21]'
-          }`}
-          placeholder="6-digit pincode"
-        />
-        {errors.pincode && (
-          <p className="mt-1 text-sm text-[#ba1a1a]">{errors.pincode}</p>
-        )}
-      </div>
+      <FormField
+        label="Pincode"
+        name="pincode"
+        value={formData.pincode}
+        onChange={handleChange}
+        error={errors.pincode}
+        maxLength={6}
+        placeholder="6-digit pincode"
+      />
 
       {/* Default checkbox */}
       <div className="flex items-center">
@@ -280,16 +226,16 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
           type="button"
           onClick={onCancel}
           className="flex-1 border border-[#cec5bc] text-[#5b5149] py-2 font-semibold hover:bg-[#f6f3f0] transition-colors"
-          disabled={submitting}
+          disabled={isLoading}
         >
           Cancel
         </button>
         <button
           type="submit"
           className="flex-1 bg-[#2c2825] text-[#fcf9f6] py-2 font-semibold hover:bg-[#1f1b18] transition-colors disabled:bg-[#948980] disabled:cursor-not-allowed"
-          disabled={submitting}
+          disabled={isLoading}
         >
-          {submitting ? 'Saving...' : address ? 'Update Address' : 'Add Address'}
+          {isLoading ? 'Saving...' : address ? 'Update Address' : 'Add Address'}
         </button>
       </div>
     </form>

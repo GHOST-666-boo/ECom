@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import axios from '../lib/axios';
+import { setApiErrors } from '../lib/apiError';
+import FormField from './ui/FormField';
+import FormAlert from './ui/FormAlert';
+import SubmitButton from './ui/SubmitButton';
 
 /**
  * ForgotPasswordForm Component
@@ -13,6 +17,13 @@ export default function ForgotPasswordForm({ onBack }) {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (errors.email) {
+      setErrors((prev) => ({ ...prev, email: null }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,13 +39,7 @@ export default function ForgotPasswordForm({ onBack }) {
         setEmail('');
       }
     } catch (error) {
-      if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        setErrors({
-          general: error.response?.data?.message || 'Failed to send reset link. Please try again.',
-        });
-      }
+      setApiErrors(error, setErrors, 'Failed to send reset link. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -49,55 +54,27 @@ export default function ForgotPasswordForm({ onBack }) {
         </p>
       </div>
 
-      {/* Success Message */}
-      {successMessage && (
-        <div className="bg-[#e9f4ec] text-[#1b5e20] px-4 py-3">
-          {successMessage}
-        </div>
-      )}
-
-      {/* General Error */}
-      {errors.general && (
-        <div className="bg-[#fdeceb] text-[#ba1a1a] px-4 py-3">
-          {errors.general}
-        </div>
-      )}
+      <FormAlert type="success" message={successMessage} />
+      <FormAlert type="error" message={errors.general} />
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Email Field */}
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-[#5b5149] mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (errors.email) {
-                setErrors((prev) => ({ ...prev, email: null }));
-              }
-            }}
-            className={`w-full px-1 py-2 bg-transparent border-0 border-b-2 focus:outline-none ${
-              errors.email ? 'border-[#ba1a1a]' : 'border-[#cec5bc] focus:border-[#745b21]'
-            }`}
-            required
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-[#ba1a1a]">{errors.email[0]}</p>
-          )}
-        </div>
+        <FormField
+          label="Email"
+          name="email"
+          type="email"
+          value={email}
+          onChange={handleEmailChange}
+          error={errors.email}
+          required
+        />
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={isLoading || successMessage}
-          className="w-full bg-[#2c2825] hover:bg-[#1f1b18] text-[#fcf9f6] font-semibold py-2 px-4 transition-colors disabled:bg-[#948980] disabled:cursor-not-allowed"
+        <SubmitButton
+          isLoading={isLoading}
+          disabled={!!successMessage}
+          loadingText="Sending..."
         >
-          {isLoading ? 'Sending...' : 'Send Reset Link'}
-        </button>
+          Send Reset Link
+        </SubmitButton>
 
         {/* Back to Login */}
         <div className="text-center">
