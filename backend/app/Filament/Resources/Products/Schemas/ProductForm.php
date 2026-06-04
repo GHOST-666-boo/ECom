@@ -79,7 +79,6 @@ class ProductForm
                     ->multiple()
                     ->disk('r2')
                     ->directory('products')
-                    ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)
                     ->maxFiles(5)

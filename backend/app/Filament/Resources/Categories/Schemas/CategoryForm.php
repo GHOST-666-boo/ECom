@@ -42,7 +42,6 @@ class CategoryForm
                     ->image()
                     ->disk('r2')
                     ->directory('categories')
-                    ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(2048)
                     ->nullable()

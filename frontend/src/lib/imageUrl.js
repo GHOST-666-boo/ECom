@@ -9,7 +9,7 @@ const STORAGE_BASE = import.meta.env.VITE_API_BASE_URL
   : 'http://localhost:8000/storage';
 
 export function getImageUrl(path) {
-  if (!path) return null;
+  if (!path || typeof path !== 'string') return null;
   // Already a full URL (http/https)
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
   // Already has /storage/ prefix
