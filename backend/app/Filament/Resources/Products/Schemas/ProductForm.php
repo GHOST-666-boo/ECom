@@ -77,7 +77,7 @@ class ProductForm
                     ->label('Product Images')
                     ->image()
                     ->multiple()
-                    ->disk(config('filesystems.default'))
+                    ->disk('r2')
                     ->directory('products')
                     ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])

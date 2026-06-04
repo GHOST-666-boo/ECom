@@ -40,7 +40,7 @@ class CategoryForm
                 FileUpload::make('image')
                     ->label('Category Image')
                     ->image()
-                    ->disk(config('filesystems.default'))
+                    ->disk('r2')
                     ->directory('categories')
                     ->storeFiles(false)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
