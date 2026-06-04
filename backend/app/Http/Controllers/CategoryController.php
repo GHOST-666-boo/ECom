@@ -23,7 +23,7 @@ class CategoryController extends Controller
                     ->get()
                     ->toArray();
             });
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Fall back to database if cache is unavailable (Requirement 11.7)
             $categories = Category::where('is_active', true)
                 ->with('children')
