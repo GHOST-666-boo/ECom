@@ -57,12 +57,30 @@ class Product extends Model
             return [];
         }
 
-        return array_map(function ($path) {
-            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-                return $path;
+        $urls = [];
+        foreach ($this->images as $item) {
+            // Handle nested array format from old Filament uploads
+            if (is_array($item)) {
+                $path = $item['path'] ?? $item['url'] ?? null;
+                if (!$path || !is_string($path)) {
+                    continue;
+                }
+            } else {
+                $path = $item;
             }
-            return \Illuminate\Support\Facades\Storage::disk('r2')->url($path);
-        }, $this->images);
+
+            if (!is_string($path)) {
+                continue;
+            }
+
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                $urls[] = $path;
+            } else {
+                $urls[] = \Illuminate\Support\Facades\Storage::disk('r2')->url($path);
+            }
+        }
+
+        return $urls;
     }
 
     /**
