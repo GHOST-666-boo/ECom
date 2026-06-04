@@ -24,10 +24,12 @@ use Illuminate\Support\Facades\Route;
 
 // Public authentication routes
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])
+        ->middleware('throttle:5,1'); // 5 attempts per minute per IP
     Route::post('/login', [AuthController::class, 'login'])
         ->middleware('throttle:5,1'); // 5 attempts per minute per IP
-    Route::post('/google', [AuthController::class, 'googleAuth']);
+    Route::post('/google', [AuthController::class, 'googleAuth'])
+        ->middleware('throttle:10,1'); // 10 attempts per minute per IP
     
     // Email verification routes
     Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])
@@ -35,8 +37,10 @@ Route::prefix('auth')->group(function () {
         ->name('verification.verify');
     
     // Password reset routes
-    Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink']);
-    Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+    Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink'])
+        ->middleware('throttle:5,1'); // 5 attempts per minute per IP
+    Route::post('/password/reset', [AuthController::class, 'resetPassword'])
+        ->middleware('throttle:5,1'); // 5 attempts per minute per IP
 });
 
 // Protected routes
@@ -87,8 +91,10 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
 
 // Newsletter routes (public, no authentication required)
-Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+    ->middleware('throttle:5,1'); // 5 attempts per minute per IP
 Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe']);
 
 // Webhook routes (no authentication required - webhooks come from Razorpay servers)
-Route::post('/webhooks/razorpay', [WebhookController::class, 'razorpay']);
+Route::post('/webhooks/razorpay', [WebhookController::class, 'razorpay'])
+    ->middleware('throttle:60,1'); // 60 attempts per minute per IP
