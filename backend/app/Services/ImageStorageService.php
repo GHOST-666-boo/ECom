@@ -15,10 +15,12 @@ class ImageStorageService
      * @param string $directory The directory path within the R2 bucket (e.g., 'products', 'categories')
      * @return string The storage path of the uploaded image
      */
-    public function uploadImage(UploadedFile $file, string $directory = 'images'): string
+    public function uploadImage($file, string $directory = 'images'): string
     {
-        // Read the image and strip EXIF metadata
-        $image = Image::read($file->getRealPath());
+        // Read image content - works for both local files and remote storage (R2/S3)
+        // getRealPath() fails for remote disks, so we read binary content directly
+        $content = method_exists($file, 'get') ? $file->get() : file_get_contents($file->getRealPath());
+        $image = Image::read($content);
 
         // Encode the image without EXIF metadata
         $encodedImage = $image->encode();
