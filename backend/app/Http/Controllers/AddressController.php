@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AddressController extends Controller
 {
@@ -221,15 +222,28 @@ class AddressController extends Controller
         }
 
         // Use transaction to ensure atomicity
-        DB::transaction(function () use ($user, $address) {
-            // Unmark any existing default address
-            Address::where('user_id', $user->id)
-                ->where('is_default', true)
-                ->update(['is_default' => false]);
+        try {
+            DB::transaction(function () use ($user, $address) {
+                // Unmark any existing default address
+                Address::where('user_id', $user->id)
+                    ->where('is_default', true)
+                    ->update(['is_default' => false]);
 
-            // Mark this address as default
-            $address->update(['is_default' => true]);
-        });
+                // Mark this address as default
+                $address->update(['is_default' => true]);
+            });
+        } catch (\Exception $e) {
+            Log::error('Failed to set default address', [
+                'user_id' => $user->id,
+                'address_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update default address. Please try again.',
+            ], 500);
+        }
 
         // Refresh the address to get updated data
         $address->refresh();

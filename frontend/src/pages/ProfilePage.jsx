@@ -34,6 +34,7 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
+      setErrors({ general: ['Failed to load profile. Please try again.'] });
     } finally {
       setLoading(false);
     }

@@ -42,6 +42,11 @@ const useCartStore = create((set, get) => ({
           subtotal,
           isLoading: false,
         });
+      } else {
+        set({
+          error: response.data?.message || 'Failed to fetch cart',
+          isLoading: false,
+        });
       }
     } catch (error) {
       console.error('Fetch cart error:', error);
@@ -99,6 +104,10 @@ const useCartStore = create((set, get) => ({
         await get().fetchCart();
         return { success: true };
       }
+      return {
+        success: false,
+        message: response.data?.message || 'Failed to update item quantity',
+      };
     } catch (error) {
       console.error('Update cart item error:', error);
       return {
@@ -121,6 +130,10 @@ const useCartStore = create((set, get) => ({
         await get().fetchCart();
         return { success: true };
       }
+      return {
+        success: false,
+        message: response.data?.message || 'Failed to remove item',
+      };
     } catch (error) {
       console.error('Remove cart item error:', error);
       return {

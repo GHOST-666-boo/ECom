@@ -44,7 +44,8 @@ class SendOrderCancelledNotification implements ShouldQueue
                 'error' => $e->getMessage(),
             ]);
             
-            // Don't throw exception - email failure should not block order processing
+            // Re-throw to allow Laravel's queue retry mechanism to handle retries
+            throw $e;
         }
     }
 }
