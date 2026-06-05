@@ -52,15 +52,18 @@ export default function Layout() {
           borderBottom: '1px solid rgba(207,197,188,0.18)',
         }}
       >
-        <div className="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+        <div className="flex justify-between items-center w-full px-8 py-2 max-w-screen-2xl mx-auto">
 
           {/* Logo */}
           <Link
             to="/"
-            className="text-2xl tracking-tighter"
-            style={{ fontFamily: 'Noto Serif, serif', fontStyle: 'italic', color: '#4c3e25' }}
+            className="flex items-center"
           >
-            Vriddhi
+            <img
+              src="/logo.png"
+              alt="Vriddhi"
+              className="h-14 object-contain"
+            />
           </Link>
 
           {/* Desktop Nav Links */}
@@ -240,12 +243,13 @@ export default function Layout() {
 
             {/* Brand */}
             <div>
-              <p
-                className="text-2xl mb-3 italic"
-                style={{ fontFamily: 'Noto Serif, serif', color: '#4c3e25' }}
-              >
-                Vriddhi
-              </p>
+              <Link to="/" className="inline-block mb-3">
+                <img
+                  src="/logo.png"
+                  alt="Vriddhi"
+                  className="h-12 object-contain"
+                />
+              </Link>
               <p
                 className="text-xs tracking-widest uppercase leading-relaxed"
                 style={{ color: '#7e766e', fontFamily: 'Manrope, sans-serif' }}
