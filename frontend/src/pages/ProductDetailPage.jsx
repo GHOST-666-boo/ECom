@@ -4,6 +4,7 @@ import axios from '../lib/axios';
 import { getImageUrl } from '../lib/imageUrl';
 import useAuthStore from '../stores/authStore';
 import useCartStore from '../stores/cartStore';
+import ProductList from '../components/ProductList';
 
 /**
  * ProductDetailPage - Metallic Vriddhi (Oat Edition)
@@ -22,8 +23,29 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const images = product?.image_urls?.length > 0 ? product.image_urls : (product?.images?.length > 0 ? product.images : [null]);
 
   useEffect(() => { fetchProduct(); }, [slug]); // eslint-disable-line
+
+  // Handle keyboard events for Lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsLightboxOpen(false);
+      } else if (e.key === 'ArrowRight' && images.length > 1) {
+        setSelectedImage(prev => (prev === images.length - 1 ? 0 : prev + 1));
+      } else if (e.key === 'ArrowLeft' && images.length > 1) {
+        setSelectedImage(prev => (prev === 0 ? images.length - 1 : prev - 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, images]);
 
   const fetchProduct = async () => {
     try {
@@ -92,8 +114,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  const images = product.image_urls?.length > 0 ? product.image_urls : (product.images?.length > 0 ? product.images : [null]);
-
   return (
     <div style={{ background: '#fcf9f8' }} className="pb-24">
 
@@ -117,13 +137,25 @@ export default function ProductDetailPage() {
         {/* ── Gallery Column ── */}
         <div className="lg:col-span-7 flex flex-col gap-8">
           {/* Main Image */}
-          <div className="aspect-[4/5] overflow-hidden" style={{ background: '#f6f3f2' }}>
+          <div 
+            className="aspect-[4/5] max-h-[580px] w-full overflow-hidden cursor-zoom-in group/main relative shadow-sm mx-auto" 
+            style={{ background: '#f6f3f2' }}
+            onClick={() => setIsLightboxOpen(true)}
+          >
             {images[selectedImage] ? (
-              <img
-                src={getImageUrl(images[selectedImage])}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
+              <>
+                <img
+                  src={getImageUrl(images[selectedImage])}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover/main:scale-[1.02]"
+                />
+                {/* Subtle hover overlay for desktop */}
+                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/main:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="bg-[#fcf9f8]/95 backdrop-blur text-[#463f38] px-5 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold shadow-md">
+                    Click to Zoom
+                  </span>
+                </div>
+              </>
             ) : (
               <div
                 className="w-full h-full flex items-center justify-center"
@@ -335,6 +367,86 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Related Products (You May Also Like) ── */}
+      <section className="border-t border-[#cfc5bc]/20 py-24 px-8 max-w-screen-2xl mx-auto">
+        <h2 
+          className="text-3xl italic mb-16"
+          style={{ fontFamily: 'Noto Serif, serif', color: '#463f38' }}
+        >
+          You May Also Like
+        </h2>
+        <ProductList limit={4} categoryId={product.category_id} excludeId={product.id} />
+      </section>
+
+      {/* ── Premium Lightbox Modal ── */}
+      {isLightboxOpen && images[selectedImage] && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12 bg-black/90 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          {/* Close button */}
+          <button
+            className="absolute top-6 right-6 text-white/70 hover:text-white text-3xl font-light transition-all p-3 z-[120] hover:scale-110 duration-200"
+            onClick={() => setIsLightboxOpen(false)}
+            aria-label="Close lightbox"
+          >
+            ✕
+          </button>
+
+          {/* Previous Button */}
+          {images.length > 1 && (
+            <button
+              className="absolute left-6 text-white/50 hover:text-white text-5xl font-light transition-all p-4 z-[120] hover:scale-110 active:scale-95 duration-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage(prev => (prev === 0 ? images.length - 1 : prev - 1));
+              }}
+              aria-label="Previous image"
+            >
+              ⟨
+            </button>
+          )}
+
+          {/* Next Button */}
+          {images.length > 1 && (
+            <button
+              className="absolute right-6 text-white/50 hover:text-white text-5xl font-light transition-all p-4 z-[120] hover:scale-110 active:scale-95 duration-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage(prev => (prev === images.length - 1 ? 0 : prev + 1));
+              }}
+              aria-label="Next image"
+            >
+              ⟩
+            </button>
+          )}
+
+          {/* Centered Image display container */}
+          <div
+            className="relative max-w-full max-h-[85vh] flex flex-col items-center justify-center animate-in zoom-in-95 duration-300"
+            onClick={e => e.stopPropagation()}
+          >
+            <img
+              src={getImageUrl(images[selectedImage])}
+              alt={product.name}
+              className="max-w-full max-h-[80vh] object-contain shadow-2xl"
+              style={{ border: '1px solid rgba(255,255,255,0.05)' }}
+            />
+            {/* Caption */}
+            <div className="mt-4 text-center">
+              <span className="text-white/80 text-sm tracking-widest uppercase font-semibold" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                {product.name}
+              </span>
+              {images.length > 1 && (
+                <span className="text-white/40 text-xs tracking-wider block mt-1" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                  Image {selectedImage + 1} of {images.length}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

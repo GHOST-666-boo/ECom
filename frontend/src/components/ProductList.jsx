@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from '../lib/axios';
 import { getImageUrl } from '../lib/imageUrl';
 import useAuthStore from '../stores/authStore';
@@ -9,8 +9,9 @@ import useCartStore from '../stores/cartStore';
  * ProductList - Metallic Vriddhi (Oat Edition)
  * 4-column gallery grid with "Quick Look" hover, editorial typography
  */
-export default function ProductList() {
+export default function ProductList({ limit = null, categoryId: propCategoryId = null, excludeId = null }) {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
   const { addItem } = useCartStore();
 
@@ -22,7 +23,8 @@ export default function ProductList() {
   const [addingToCart, setAddingToCart] = useState({});
   const [addedToCart, setAddedToCart] = useState({});
 
-  const categoryId = searchParams.get('category_id');
+  const urlCategoryId = searchParams.get('category_id');
+  const categoryId = propCategoryId !== null ? propCategoryId : urlCategoryId;
   const minPrice = searchParams.get('min_price');
   const maxPrice = searchParams.get('max_price');
 
@@ -31,7 +33,7 @@ export default function ProductList() {
     setNextCursor(null);
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryId, minPrice, maxPrice]);
+  }, [categoryId, minPrice, maxPrice, excludeId]);
 
   const fetchProducts = async (cursor = null) => {
     try {
@@ -44,9 +46,29 @@ export default function ProductList() {
       if (cursor) params.append('cursor', cursor);
       const response = await axios.get(`/products?${params.toString()}`);
       if (response.data?.success) {
-        const newProducts = response.data.products || [];  // Clean: response.data.products
-        setProducts(prev => cursor ? [...prev, ...newProducts] : newProducts);
-        setNextCursor(response.data.meta?.next_cursor || null);
+        let newProducts = response.data.products || [];  // Clean: response.data.products
+        if (excludeId) {
+          newProducts = newProducts.filter(p => p.id !== excludeId);
+        }
+
+        // Fallback: if we filtered by category but found no other products,
+        // load general products from other categories instead of showing empty state.
+        if (newProducts.length === 0 && categoryId && excludeId && !cursor) {
+          const fallbackParams = new URLSearchParams();
+          if (minPrice) fallbackParams.append('min_price', minPrice);
+          if (maxPrice) fallbackParams.append('max_price', maxPrice);
+          const fallbackResponse = await axios.get(`/products?${fallbackParams.toString()}`);
+          if (fallbackResponse.data?.success) {
+            let fallbackProducts = fallbackResponse.data.products || [];
+            newProducts = fallbackProducts.filter(p => p.id !== excludeId);
+          }
+        }
+
+        setProducts(prev => {
+          const combined = cursor ? [...prev, ...newProducts] : newProducts;
+          return limit ? combined.slice(0, limit) : combined;
+        });
+        setNextCursor(limit ? null : (response.data.meta?.next_cursor || null));
       } else {
         setError('Failed to load products');
       }
@@ -135,7 +157,12 @@ export default function ProductList() {
       {/* ── Product Gallery Grid ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
         {products.map((product) => (
-          <article key={product.id} className="group" style={{ cursor: 'pointer' }}>
+          <article 
+            key={product.id} 
+            className="group" 
+            style={{ cursor: 'pointer' }}
+            onClick={() => navigate(`/products/${product.slug}`)}
+          >
 
             {/* Image Container */}
             <div
@@ -190,7 +217,10 @@ export default function ProductList() {
                   className="absolute bottom-4 left-0 right-0 flex justify-center transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
                 >
                   <button
-                    onClick={() => handleAddToCart(product.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(product.id);
+                    }}
                     disabled={addingToCart[product.id]}
                     className="px-6 py-2 text-[10px] uppercase font-bold tracking-widest transition-opacity hover:opacity-80"
                     style={{

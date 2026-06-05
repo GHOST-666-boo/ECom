@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,    // Creates 10 categories with parent-child relationships
             ProductSeeder::class,     // Creates 100 products across categories
             OrderSeeder::class,       // Creates 50 orders with various statuses
+            HomepageBentoSlotSeeder::class,
         ]);
 
         $this->command->info('Database seeding completed successfully!');

@@ -46,6 +46,10 @@ class Product extends Model
                 throw new \InvalidArgumentException('Stock quantity cannot be negative');
             }
         });
+
+        $clearBentoCache = fn () => \Illuminate\Support\Facades\Cache::forget('homepage_bento_slots');
+        static::saved($clearBentoCache);
+        static::deleted($clearBentoCache);
     }
 
     /**

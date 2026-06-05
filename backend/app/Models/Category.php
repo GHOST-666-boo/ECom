@@ -27,6 +27,18 @@ class Category extends Model
     }
 
     /**
+     * Boot method to register model event listeners.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        $clearBentoCache = fn () => \Illuminate\Support\Facades\Cache::forget('homepage_bento_slots');
+        static::saved($clearBentoCache);
+        static::deleted($clearBentoCache);
+    }
+
+    /**
      * Get full R2 public URL for category image.
      */
     protected function getImageUrlAttribute(): ?string

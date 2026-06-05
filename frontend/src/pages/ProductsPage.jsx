@@ -209,37 +209,6 @@ export default function ProductsPage() {
           <ProductList />
         </ErrorBoundary>
       </div>
-
-      {/* ── Custom Commission CTA ── */}
-      <section
-        className="mx-8 mb-24 p-16 text-center"
-        style={{ background: '#f6f3f2' }}
-      >
-        <h2
-          className="text-4xl italic mb-6"
-          style={{ fontFamily: 'Noto Serif, serif', color: '#463f38', letterSpacing: '-0.02em' }}
-        >
-          Custom Commissions
-        </h2>
-        <p
-          className="max-w-lg mx-auto mb-10 leading-relaxed"
-          style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
-        >
-          Seeking a bespoke artifact for your space? Our artisans work closely with collectors
-          to forge unique visions.
-        </p>
-        <a
-          href="mailto:hello@vriddhi.com"
-          className="inline-block px-10 py-4 text-sm tracking-[0.2em] uppercase font-medium transition-opacity hover:opacity-90"
-          style={{
-            background: '#463f38',
-            color: '#ffffff',
-            fontFamily: 'Manrope, sans-serif',
-          }}
-        >
-          Inquire Now
-        </a>
-      </section>
     </div>
   );
 }

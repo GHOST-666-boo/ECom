@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import AuthModal from '../components/AuthModal';
-import CategoryList from '../components/CategoryList';
+import ProductList from '../components/ProductList';
+import axios from '../lib/axios';
 
 /**
  * HomePage - Metallic Vriddhi (Oat Edition)
@@ -11,12 +12,107 @@ import CategoryList from '../components/CategoryList';
 export default function HomePage() {
   const location = useLocation();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [bentoSlots, setBentoSlots] = useState({
+    slot_1: {
+      slot_key: 'slot_1',
+      title: 'Sacred Geometry Series',
+      subtitle: null,
+      image_url: null,
+      icon: null,
+      badge: 'Signature',
+      theme: 'gradient',
+      computed_link: '/products'
+    },
+    slot_2: {
+      slot_key: 'slot_2',
+      title: 'The Sterling Table',
+      subtitle: 'Refined utility for the home.',
+      image_url: null,
+      icon: null,
+      badge: null,
+      theme: 'light',
+      computed_link: '/products'
+    },
+    slot_3: {
+      slot_key: 'slot_3',
+      title: 'Bespoke Iron',
+      subtitle: 'Custom architectural elements hand-forged for lasting legacy.',
+      image_url: null,
+      icon: '⚒',
+      badge: null,
+      theme: 'light',
+      computed_link: '/products'
+    },
+    slot_4: {
+      slot_key: 'slot_4',
+      title: 'Aged Bronze Altar',
+      subtitle: 'Limited release available for discerning collectors.',
+      image_url: null,
+      icon: null,
+      badge: 'New Arrival',
+      theme: 'dark',
+      computed_link: '/products'
+    }
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (location.state?.loginRequired || new URLSearchParams(location.search).get('loginRequired')) {
       setIsAuthModalOpen(true);
     }
   }, [location]);
+
+  useEffect(() => {
+    const fetchBentoSlots = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get('/homepage-bento');
+        if (response.data.success && response.data.bento_slots) {
+          const slotsMap = {};
+          response.data.bento_slots.forEach(slot => {
+            slotsMap[slot.slot_key] = slot;
+          });
+          setBentoSlots(prev => ({ ...prev, ...slotsMap }));
+        }
+      } catch (err) {
+        console.error('Error fetching homepage bento slots:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBentoSlots();
+  }, []);
+
+  const getSlotStyles = (slot, defaultBg) => {
+    const isDark = slot.theme === 'dark' || slot.theme === 'gradient';
+    const isGradient = slot.theme === 'gradient';
+    
+    let backgroundStyle = {};
+    if (slot.image_url) {
+      backgroundStyle = {
+        backgroundImage: isDark 
+          ? `linear-gradient(to bottom, rgba(27,27,28,0.3), rgba(27,27,28,0.75)), url(${slot.image_url})` 
+          : `linear-gradient(to bottom, rgba(252,249,248,0.65), rgba(252,249,248,0.9)), url(${slot.image_url})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      };
+    } else if (isGradient) {
+      backgroundStyle = {
+        background: 'linear-gradient(135deg, #463f38 0%, #5e564f 100%)'
+      };
+    } else {
+      backgroundStyle = {
+        background: defaultBg
+      };
+    }
+
+    return {
+      style: backgroundStyle,
+      textColor: isDark ? '#ffffff' : '#1b1b1c',
+      mutedColor: isDark ? 'rgba(255,255,255,0.7)' : '#4d453f',
+      accentColor: isDark ? '#d0c4bc' : '#463f38'
+    };
+  };
 
   return (
     <div style={{ background: '#fcf9f8', color: '#1b1b1c' }}>
@@ -145,119 +241,143 @@ export default function HomePage() {
 
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6" style={{ minHeight: '640px' }}>
-            {/* Large featured card */}
-            <div
-              className="md:col-span-2 md:row-span-2 relative overflow-hidden group cursor-pointer flex flex-col justify-end p-10"
-              style={{ background: 'linear-gradient(135deg, #463f38 0%, #5e564f 100%)', minHeight: '360px' }}
-            >
-              <span
-                className="text-xs uppercase tracking-widest mb-2 block"
-                style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'Manrope, sans-serif' }}
-              >
-                Signature
-              </span>
-              <h3
-                className="text-4xl mb-6"
-                style={{ fontFamily: 'Noto Serif, serif', color: '#ffffff', letterSpacing: '-0.02em' }}
-              >
-                Sacred Geometry Series
-              </h3>
-              <Link
-                to="/products"
-                className="inline-block px-6 py-2 text-xs uppercase tracking-widest transition-all"
-                style={{
-                  background: 'rgba(255,255,255,0.12)',
-                  border: '1px solid rgba(255,255,255,0.22)',
-                  color: '#ffffff',
-                  fontFamily: 'Manrope, sans-serif',
-                  backdropFilter: 'blur(8px)',
-                }}
-                onMouseEnter={e => (e.target.style.background = 'rgba(255,255,255,0.22)')}
-                onMouseLeave={e => (e.target.style.background = 'rgba(255,255,255,0.12)')}
-              >
-                Discover
-              </Link>
-            </div>
+            {(() => {
+              const slotLayoutConfigs = {
+                slot_1: {
+                  gridClass: "md:col-span-2 md:row-span-2 p-10 justify-end",
+                  defaultBg: "#463f38",
+                  minHeight: "360px",
+                  renderInner: (slot, textColor, mutedColor) => (
+                    <>
+                      {slot.badge && (
+                        <span className="text-xs uppercase tracking-widest mb-2 block" style={{ color: mutedColor, fontFamily: 'Manrope, sans-serif' }}>
+                          {slot.badge}
+                        </span>
+                      )}
+                      <h3 className="text-4xl mb-6" style={{ fontFamily: 'Noto Serif, serif', color: textColor, letterSpacing: '-0.02em' }}>
+                        {slot.title}
+                      </h3>
+                      {slot.computed_link && (
+                        <span className="inline-block px-6 py-2 text-xs uppercase tracking-widest transition-all w-fit text-center" style={{
+                          background: slot.theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.12)',
+                          border: slot.theme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.22)',
+                          color: textColor,
+                          fontFamily: 'Manrope, sans-serif',
+                          backdropFilter: 'blur(8px)',
+                        }}>
+                          Discover
+                        </span>
+                      )}
+                    </>
+                  )
+                },
+                slot_2: {
+                  gridClass: "md:col-span-2 p-6 justify-center items-center text-center",
+                  defaultBg: "#e5e2e1",
+                  minHeight: "200px",
+                  renderInner: (slot, textColor, mutedColor) => (
+                    <>
+                      {slot.badge && (
+                        <span className="text-xs uppercase tracking-widest mb-2 block" style={{ color: mutedColor, fontFamily: 'Manrope, sans-serif' }}>
+                          {slot.badge}
+                        </span>
+                      )}
+                      <h3 className="text-2xl mb-2" style={{ fontFamily: 'Noto Serif, serif', color: textColor }}>
+                        {slot.title}
+                      </h3>
+                      {slot.subtitle && (
+                        <p className="text-sm italic" style={{ fontFamily: 'Noto Serif, serif', color: mutedColor }}>
+                          {slot.subtitle}
+                        </p>
+                      )}
+                    </>
+                  )
+                },
+                slot_3: {
+                  gridClass: "md:col-span-1 p-8 justify-between",
+                  defaultBg: "#eae7e7",
+                  renderInner: (slot, textColor, mutedColor) => (
+                    <>
+                      {slot.icon ? (
+                        <div className="w-12 h-12 flex items-center justify-center mb-4" style={{ background: slot.theme === 'light' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.15)' }}>
+                          <span className="text-4xl">{slot.icon}</span>
+                        </div>
+                      ) : <div />}
+                      <div>
+                        {slot.badge && (
+                          <span className="text-[10px] uppercase tracking-widest font-bold block mb-1" style={{ color: mutedColor, fontFamily: 'Manrope, sans-serif' }}>
+                            {slot.badge}
+                          </span>
+                        )}
+                        <h4 className="text-xl mb-2" style={{ fontFamily: 'Noto Serif, serif', color: textColor }}>
+                          {slot.title}
+                        </h4>
+                        {slot.subtitle && (
+                          <p className="text-xs leading-relaxed" style={{ color: mutedColor, fontFamily: 'Manrope, sans-serif' }}>
+                            {slot.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )
+                },
+                slot_4: {
+                  gridClass: "md:col-span-1 p-8 justify-between",
+                  defaultBg: "#463f38",
+                  renderInner: (slot, textColor, mutedColor) => (
+                    <>
+                      {slot.badge ? (
+                        <span className="text-[10px] uppercase tracking-widest font-bold block" style={{ color: mutedColor, fontFamily: 'Manrope, sans-serif' }}>
+                          {slot.badge}
+                        </span>
+                      ) : <div />}
+                      <div className="my-6">
+                        <h4 className="text-xl mb-2" style={{ fontFamily: 'Noto Serif, serif', color: textColor }}>
+                          {slot.title}
+                        </h4>
+                        {slot.subtitle && (
+                          <p className="text-xs leading-relaxed" style={{ color: mutedColor, fontFamily: 'Manrope, sans-serif' }}>
+                            {slot.subtitle}
+                          </p>
+                        )}
+                      </div>
+                      {slot.computed_link ? (
+                        <span className="text-xs flex items-center gap-2 font-bold uppercase tracking-widest" style={{ color: textColor, fontFamily: 'Manrope, sans-serif' }}>
+                          Shop Now →
+                        </span>
+                      ) : <div />}
+                    </>
+                  )
+                }
+              };
 
-            {/* Medium card */}
-            <div
-              className="md:col-span-2 relative overflow-hidden group cursor-pointer flex flex-col justify-center items-center text-center p-6"
-              style={{ background: '#e5e2e1', minHeight: '200px' }}
-            >
-              <h3
-                className="text-2xl mb-2"
-                style={{ fontFamily: 'Noto Serif, serif', color: '#463f38' }}
-              >
-                The Sterling Table
-              </h3>
-              <p
-                className="text-sm italic"
-                style={{ fontFamily: 'Noto Serif, serif', color: '#4d453f' }}
-              >
-                Refined utility for the home.
-              </p>
-            </div>
+              const slotOrder = ['slot_1', 'slot_2', 'slot_3', 'slot_4'];
 
-            {/* Icon card */}
-            <div
-              className="md:col-span-1 p-8 flex flex-col justify-between"
-              style={{ background: '#eae7e7' }}
-            >
-              <div
-                className="w-full aspect-square flex items-center justify-center mb-4"
-                style={{ background: 'rgba(255,255,255,0.4)' }}
-              >
-                <span className="text-4xl" style={{ color: '#4c3e25' }}>⚒</span>
-              </div>
-              <div>
-                <h4
-                  className="text-xl mb-2"
-                  style={{ fontFamily: 'Noto Serif, serif', color: '#1b1b1c' }}
-                >
-                  Bespoke Iron
-                </h4>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
-                >
-                  Custom architectural elements hand-forged for lasting legacy.
-                </p>
-              </div>
-            </div>
+              return slotOrder.map(key => {
+                const slot = bentoSlots[key];
+                if (!slot) return null;
+                const config = slotLayoutConfigs[key];
+                const { style, textColor, mutedColor } = getSlotStyles(slot, config.defaultBg);
+                const Element = slot.computed_link ? Link : 'div';
+                const elementProps = slot.computed_link ? { to: slot.computed_link } : {};
+                
+                // Add hover transform & pointer cursor ONLY if the slot has a link
+                const interactiveClass = slot.computed_link 
+                  ? "cursor-pointer transition-transform hover:scale-[1.01] duration-300" 
+                  : "cursor-default";
 
-            {/* Dark arrival card */}
-            <div
-              className="md:col-span-1 p-8 flex flex-col justify-between"
-              style={{ background: '#463f38' }}
-            >
-              <span
-                className="text-[10px] uppercase tracking-widest font-bold"
-                style={{ color: '#d0c4bc', fontFamily: 'Manrope, sans-serif' }}
-              >
-                New Arrival
-              </span>
-              <div className="my-6">
-                <h4
-                  className="text-xl mb-2"
-                  style={{ fontFamily: 'Noto Serif, serif', color: '#ffffff' }}
-                >
-                  Aged Bronze Altar
-                </h4>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: '#d7ccc3', fontFamily: 'Manrope, sans-serif' }}
-                >
-                  Limited release available for discerning collectors.
-                </p>
-              </div>
-              <Link
-                to="/products"
-                className="text-xs flex items-center gap-2 font-bold uppercase tracking-widest"
-                style={{ color: '#ffffff', fontFamily: 'Manrope, sans-serif' }}
-              >
-                Shop Now →
-              </Link>
-            </div>
+                return (
+                  <Element
+                    key={key}
+                    {...elementProps}
+                    className={`${config.gridClass} relative overflow-hidden group flex flex-col ${interactiveClass} ${isLoading ? 'animate-pulse opacity-85' : ''}`}
+                    style={{ ...style, minHeight: config.minHeight }}
+                  >
+                    {config.renderInner(slot, textColor, mutedColor)}
+                  </Element>
+                );
+              });
+            })()}
           </div>
         </div>
       </section>
@@ -282,58 +402,10 @@ export default function HomePage() {
             Individually Hand-Crafted Artifacts
           </p>
         </div>
-        <CategoryList />
+        <ProductList limit={8} />
       </section>
 
-      {/* ── Newsletter CTA ── */}
-      <section
-        className="px-8 py-24"
-        style={{ background: '#eae7e7' }}
-      >
-        <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center">
-          <span className="text-4xl mb-8" style={{ color: '#4c3e25' }}>✦</span>
-          <h2
-            className="text-4xl md:text-5xl mb-8 italic"
-            style={{ fontFamily: 'Noto Serif, serif', color: '#1b1b1c', letterSpacing: '-0.02em' }}
-          >
-            Stay Within the Glow
-          </h2>
-          <p
-            className="max-w-lg mb-12 leading-relaxed"
-            style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
-          >
-            Join our folio for exclusive access to limited-run collections, artisan profiles,
-            and the philosophy behind our craft.
-          </p>
-          <form
-            className="w-full max-w-md flex flex-col md:flex-row gap-0"
-            onSubmit={e => e.preventDefault()}
-          >
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="flex-grow py-4 px-2 text-sm focus:outline-none transition-colors"
-              style={{
-                background: 'transparent',
-                borderBottom: '1px solid #7e766e',
-                color: '#1b1b1c',
-                fontFamily: 'Manrope, sans-serif',
-              }}
-            />
-            <button
-              type="submit"
-              className="mt-8 md:mt-0 px-10 py-4 text-xs uppercase tracking-widest font-bold transition-opacity hover:opacity-90"
-              style={{
-                background: '#463f38',
-                color: '#ffffff',
-                fontFamily: 'Manrope, sans-serif',
-              }}
-            >
-              Join
-            </button>
-          </form>
-        </div>
-      </section>
+
 
       {/* Auth Modal */}
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
