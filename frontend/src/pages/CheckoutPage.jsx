@@ -336,6 +336,8 @@ export default function CheckoutPage() {
                           <img
                             src={item.product.image_urls[0]}
                             alt={item.product?.name || 'Product'}
+                            className="w-full h-full object-cover"
+                            style={{ filter: 'grayscale(0.3)' }}
                           />
                         ) : item.product?.images?.[0] ? (
                           <img

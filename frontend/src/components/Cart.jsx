@@ -128,6 +128,7 @@ export default function Cart() {
                     <img
                       src={item.product.image_urls[0]}
                       alt={item.product?.name || 'Product'}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : item.product?.images?.length > 0 ? (
                     <img
