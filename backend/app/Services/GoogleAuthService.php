@@ -13,6 +13,9 @@ class GoogleAuthService
     public function verifyIdToken(string $idToken): ?array
     {
         $client = new \Google_Client(['client_id' => config('services.google.client_id')]);
-        return $client->verifyIdToken($idToken);
+        $payload = $client->verifyIdToken($idToken);
+        
+        // Google_Client::verifyIdToken() returns false on failure, not null
+        return $payload ?: null;
     }
 }
