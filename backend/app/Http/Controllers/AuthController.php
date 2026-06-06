@@ -29,8 +29,13 @@ class AuthController extends Controller
             'role' => 'customer',
         ]);
 
-        // Trigger the Registered event to send email verification notification
-        event(new Registered($user));
+        try {
+            // Trigger the Registered event to send email verification notification
+            event(new Registered($user));
+        } catch (\Exception $e) {
+            // Log the error so registration doesn't fail if SMTP/mail settings are incorrect on live
+            \Illuminate\Support\Facades\Log::error('Registration email failed to send: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
