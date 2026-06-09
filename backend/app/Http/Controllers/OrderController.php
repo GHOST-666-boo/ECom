@@ -96,6 +96,7 @@ class OrderController extends Controller
                             'name' => $item->product->name,
                             'slug' => $item->product->slug,
                             'images' => $item->product->images,
+                            'image_urls' => $item->product->image_urls,
                         ] : null,
                     ];
                 }),
@@ -304,6 +305,7 @@ class OrderController extends Controller
                                 'name' => $item->product->name,
                                 'slug' => $item->product->slug,
                                 'images' => $item->product->images,
+                                'image_urls' => $item->product->image_urls,
                             ] : null,
                         ];
                     }),

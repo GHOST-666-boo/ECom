@@ -83,10 +83,9 @@ class OrderForm
                         $rows = '';
                         foreach ($record->orderItems as $item) {
                             $product  = $item->product;
-                            $imgUrl   = $product?->images[0] ?? null;
+                            $imgUrl   = $product?->image_urls[0] ?? null;
                             $imgTag   = $imgUrl
-                                ? "<img src=\"/storage/{$imgUrl}\" 
-                                        onerror=\"this.src='/storage/{$imgUrl}';this.onerror=null;\"
+                                ? "<img src=\"{$imgUrl}\" 
                                         style=\"width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.1);\">"
                                 : "<div style=\"width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;\">🖼</div>";
 

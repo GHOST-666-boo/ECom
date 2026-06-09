@@ -20,18 +20,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        OrderPlaced::class => [
-            SendOrderPlacedNotification::class,
-        ],
-        OrderShipped::class => [
-            SendOrderShippedNotification::class,
-        ],
-        OrderDelivered::class => [
-            SendOrderDeliveredNotification::class,
-        ],
-        OrderCancelled::class => [
-            SendOrderCancelledNotification::class,
-        ],
+        // Custom events are registered via Laravel auto-discovery
     ];
 
     /**
