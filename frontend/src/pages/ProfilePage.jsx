@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../lib/axios';
 import useAuthStore from '../stores/authStore';
+import { setApiErrors } from '../lib/apiError';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 export default function ProfilePage() {
-  const { user, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -45,7 +47,6 @@ export default function ProfilePage() {
       ...prev,
       [name]: value,
     }));
-    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -68,20 +69,14 @@ export default function ProfilePage() {
 
       if (response.data.success) {
         setSuccessMessage('Profile updated successfully!');
-        // Update user in auth store
         setUser(response.data.data.user);
         
-        // Clear success message after 3 seconds
         setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
       }
     } catch (error) {
-      if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        setErrors({ general: ['Failed to update profile. Please try again.'] });
-      }
+      setApiErrors(error, setErrors, 'Failed to update profile. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -90,9 +85,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center min-h-[400px]">
-          <div className="text-gray-600">Loading profile...</div>
-        </div>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -115,7 +108,7 @@ export default function ProfilePage() {
 
           {errors.general && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-              {errors.general[0]}
+              {errors.general}
             </div>
           )}
 
@@ -135,7 +128,7 @@ export default function ProfilePage() {
                 disabled={submitting}
               />
               {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name[0]}</p>
+                <p className="text-red-500 text-sm mt-1">{Array.isArray(errors.name) ? errors.name[0] : errors.name}</p>
               )}
             </div>
 
@@ -171,7 +164,7 @@ export default function ProfilePage() {
                 placeholder="+91 9876543210"
               />
               {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone[0]}</p>
+                <p className="text-red-500 text-sm mt-1">{Array.isArray(errors.phone) ? errors.phone[0] : errors.phone}</p>
               )}
             </div>
 
