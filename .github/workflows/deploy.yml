@@ -143,6 +143,9 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            echo "==> Updating .env..."
+            echo "${{ secrets.ENV_PRODUCTION }}" > /var/www/vriddhi-api/.env
+
             echo "==> Installing Composer dependencies..."
             cd /var/www/vriddhi-api
             composer install --optimize-autoloader --no-dev --no-interaction --no-progress
