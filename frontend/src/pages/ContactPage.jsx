@@ -106,13 +106,13 @@ export default function ContactPage() {
                       Email
                     </p>
                     <a
-                      href="mailto:contact@vriddhi.com"
+                      href="mailto:himanshuverma231996@gmail.com"
                       className="text-base transition-colors duration-200"
                       style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
                       onMouseEnter={(e) => (e.target.style.color = '#463f38')}
                       onMouseLeave={(e) => (e.target.style.color = '#4c3e25')}
                     >
-                      contact@vriddhi.com
+                      Himanshuverma231996@gmail.com
                     </a>
                   </div>
                 </div>
@@ -135,13 +135,13 @@ export default function ContactPage() {
                       Phone
                     </p>
                     <a
-                      href="tel:+911234567890"
+                      href="tel:+919650640407"
                       className="text-base transition-colors duration-200"
                       style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
                       onMouseEnter={(e) => (e.target.style.color = '#463f38')}
                       onMouseLeave={(e) => (e.target.style.color = '#4c3e25')}
                     >
-                      +91 123 456 7890
+                      +91 96506 40407
                     </a>
                   </div>
                 </div>
@@ -168,8 +168,8 @@ export default function ContactPage() {
                       className="text-base leading-relaxed"
                       style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
                     >
-                      123 Vriddhi Street<br />
-                      Mumbai, Maharashtra 400001<br />
+                      M-77, Jagat Ram Park, Laxmi Nagar<br />
+                      Delhi-110092<br/>
                       India
                     </p>
                   </div>
