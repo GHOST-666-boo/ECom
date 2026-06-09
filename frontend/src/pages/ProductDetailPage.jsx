@@ -333,20 +333,7 @@ export default function ProductDetailPage() {
                   fontFamily: 'Manrope, sans-serif',
                 }}
               >
-                {addingToCart ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Collection →'}
-              </button>
-
-              <button
-                className="w-full py-5 text-sm tracking-[0.1em] uppercase font-medium transition-colors"
-                style={{
-                  background: '#f0eded',
-                  color: '#463f38',
-                  fontFamily: 'Manrope, sans-serif',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#e5e2e1')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#f0eded')}
-              >
-                Enquire for Custom Commission
+                {addingToCart ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart →'}
               </button>
 
               {/* Shipping note */}
@@ -359,7 +346,7 @@ export default function ProductDetailPage() {
                   className="text-[10px] uppercase tracking-widest leading-relaxed"
                   style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
                 >
-                  Ships pan-India with artisan care.<br />
+                  Ships pan-India with care.<br />
                   Carefully packaged for safe delivery.
                 </p>
               </div>
