@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\HomepageBentoController;
@@ -91,6 +92,9 @@ Route::get('/homepage-bento', [HomepageBentoController::class, 'index']);
 // Newsletter routes (public, no authentication required)
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
 Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe']);
+
+// Contact form route
+Route::post('/contact', [ContactController::class, 'submit']);
 
 // Webhook routes (no authentication required - webhooks come from Razorpay servers)
 Route::post('/webhooks/razorpay', [WebhookController::class, 'razorpay']);

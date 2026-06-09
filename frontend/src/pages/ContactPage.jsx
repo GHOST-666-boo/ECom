@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axiosInstance from '../lib/axios';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -24,17 +25,20 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      // Simulate API call - Replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await axiosInstance.post('/contact', formData);
       
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
-      });
+      if (response.data.success) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        setSubmitStatus('error');
+      }
     } catch (error) {
       setSubmitStatus('error');
     } finally {
