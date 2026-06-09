@@ -47,7 +47,7 @@
             </div>
             
             <p style="text-align: center;">
-                <a href="{{ url('/orders/' . $order->id) }}" class="button">View Order</a>
+                <a href="{{ config('app.frontend_url') . '/orders/' . $order->id }}" class="button">View Order</a>
             </p>
             
             <p>We will notify you when your order is shipped.</p>

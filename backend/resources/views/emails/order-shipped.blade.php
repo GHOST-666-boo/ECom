@@ -49,7 +49,7 @@
             </div>
             
             <p style="text-align: center;">
-                <a href="{{ url('/orders/' . $order->id) }}" class="button">Track Order</a>
+                <a href="{{ config('app.frontend_url') . '/orders/' . $order->id }}" class="button">Track Order</a>
             </p>
             
             <p>We will notify you when your order is delivered.</p>

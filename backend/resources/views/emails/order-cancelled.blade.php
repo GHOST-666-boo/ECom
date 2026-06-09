@@ -43,7 +43,7 @@
             </div>
             
             <p style="text-align: center;">
-                <a href="{{ url('/products') }}" class="button">Browse Products</a>
+                <a href="{{ config('app.frontend_url') . '/products' }}" class="button">Browse Products</a>
             </p>
             
             <p>If you have any questions, please don't hesitate to contact us.</p>
