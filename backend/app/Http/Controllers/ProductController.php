@@ -19,21 +19,28 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        $request->validate([
+            'category_id' => 'nullable|integer|min:1',
+            'min_price' => 'nullable|numeric|min:0',
+            'max_price' => 'nullable|numeric|min:0',
+            'is_active' => 'nullable|boolean',
+        ]);
+
         $query = Product::with('category');
 
         // Filter by category_id
         if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $query->where('category_id', (int) $request->category_id);
         }
 
         // Filter by min_price
         if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $query->where('price', '>=', (float) $request->min_price);
         }
 
         // Filter by max_price
         if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $query->where('price', '<=', (float) $request->max_price);
         }
 
         // Filter by is_active (only for admin users)
@@ -41,7 +48,7 @@ class ProductController extends Controller
         $isAdmin = $user && $user->role === 'admin';
 
         if ($request->has('is_active') && $isAdmin) {
-            $query->where('is_active', $request->is_active);
+            $query->where('is_active', (bool) $request->is_active);
         } elseif (!$isAdmin) {
             // Non-admin users only see active products
             $query->where('is_active', true);

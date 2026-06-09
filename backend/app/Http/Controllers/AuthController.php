@@ -22,12 +22,13 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::create([
+        $user = new User([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'], // Laravel will auto-hash via casts with bcrypt cost 12
-            'role' => 'customer',
         ]);
+        $user->role = 'customer';
+        $user->save();
 
         try {
             // Trigger the Registered event to send email verification notification
@@ -205,24 +206,25 @@ class AuthController extends Controller
                 
                 if ($user) {
                     // Link existing user to Google account
-                    $user->update([
-                        'google_id' => $googleId,
-                        'email_verified_at' => now(),
-                    ]);
+                    $user->google_id = $googleId;
+                    $user->email_verified_at = now();
+                    $user->save();
                 } else {
                     // Create new user
-                    $user = User::create([
+                    $user = new User([
                         'name' => $name,
                         'email' => $email,
                         'google_id' => $googleId,
-                        'email_verified_at' => now(),
-                        'role' => 'customer',
                     ]);
+                    $user->role = 'customer';
+                    $user->email_verified_at = now();
+                    $user->save();
                 }
             } else {
                 // Update email_verified_at for existing Google users
                 if (!$user->email_verified_at) {
-                    $user->update(['email_verified_at' => now()]);
+                    $user->email_verified_at = now();
+                    $user->save();
                 }
             }
 
@@ -243,7 +245,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Google authentication failed.',
                 'errors' => [
-                    'id_token' => ['Failed to verify Google ID token: ' . $e->getMessage()],
+                    'id_token' => ['Google authentication failed. Please try again.'],
                 ],
             ], 401);
         }
