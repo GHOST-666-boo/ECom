@@ -193,13 +193,14 @@ class OrderController extends Controller
                 // Generate unique order_number in format ORD-YYYYNNNNN
                 $orderNumber = $this->generateOrderNumber();
 
-                // Create address snapshot
+                // Create address snapshot (phone: address-level first, else user profile)
                 $addressSnapshot = [
-                    'name' => $address->name,
-                    'line1' => $address->line1,
-                    'line2' => $address->line2,
-                    'city' => $address->city,
-                    'state' => $address->state,
+                    'name'    => $address->name,
+                    'phone'   => $address->phone ?? $user->phone,
+                    'line1'   => $address->line1,
+                    'line2'   => $address->line2,
+                    'city'    => $address->city,
+                    'state'   => $address->state,
                     'pincode' => $address->pincode,
                 ];
 

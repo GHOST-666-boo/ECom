@@ -15,6 +15,7 @@ import axiosInstance from '../lib/axios';
 export default function AddressForm({ address, onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
     name: '',
+    phone: '',
     line1: '',
     line2: '',
     city: '',
@@ -29,12 +30,13 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
   useEffect(() => {
     if (address) {
       setFormData({
-        name: address.name || '',
-        line1: address.line1 || '',
-        line2: address.line2 || '',
-        city: address.city || '',
-        state: address.state || '',
-        pincode: address.pincode || '',
+        name:       address.name || '',
+        phone:      address.phone || '',
+        line1:      address.line1 || '',
+        line2:      address.line2 || '',
+        city:       address.city || '',
+        state:      address.state || '',
+        pincode:    address.pincode || '',
         is_default: address.is_default || false,
       });
     }
@@ -73,7 +75,13 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^[6-9][0-9]{9}$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid 10-digit Indian phone number';
+    }
+
     if (!formData.line1.trim()) {
       newErrors.line1 = 'Address line 1 is required';
     }
@@ -154,6 +162,28 @@ export default function AddressForm({ address, onSuccess, onCancel }) {
         />
         {errors.name && (
           <p className="mt-1 text-sm text-[#ba1a1a]">{errors.name}</p>
+        )}
+      </div>
+
+      {/* Phone field */}
+      <div>
+        <label htmlFor="phone" className="block text-xs font-medium text-[#5b5149] mb-1 uppercase tracking-widest">
+          Phone Number <span className="text-[#ba1a1a]">*</span>
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          maxLength={10}
+          className={`w-full px-1 py-2 bg-transparent border-0 border-b-2 focus:outline-none ${
+            errors.phone ? 'border-[#ba1a1a]' : 'border-[#cec5bc] focus:border-[#745b21]'
+          }`}
+          placeholder="e.g., 9876543210"
+        />
+        {errors.phone && (
+          <p className="mt-1 text-sm text-[#ba1a1a]">{errors.phone}</p>
         )}
       </div>
 

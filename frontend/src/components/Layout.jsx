@@ -76,7 +76,7 @@ export default function Layout() {
               <Link
                 key={to}
                 to={to}
-                className="font-label text-sm tracking-wide transition-colors duration-200"
+                className="font-label text-sm tracking-wide transition-colors duration-200 nav-link-underline"
                 style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}
                 onMouseEnter={e => (e.target.style.color = '#463f38')}
                 onMouseLeave={e => (e.target.style.color = '#4d453f')}

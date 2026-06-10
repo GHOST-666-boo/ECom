@@ -36,7 +36,7 @@ export default function Cart() {
     return (
       <div className="max-w-screen-xl mx-auto px-8 py-32 flex justify-center">
         <div
-          className="w-12 h-12 border-2 animate-spin"
+          className="w-12 h-12 border-2 rounded-full animate-spin"
           style={{ borderColor: '#e5e2e1', borderTopColor: '#4c3e25' }}
         />
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from '../lib/axios';
 import { getImageUrl } from '../lib/imageUrl';
@@ -22,6 +22,9 @@ export default function ProductList({ limit = null, categoryId: propCategoryId =
   const [nextCursor, setNextCursor] = useState(null);
   const [addingToCart, setAddingToCart] = useState({});
   const [addedToCart, setAddedToCart] = useState({});
+  const [cardImageIndex, setCardImageIndex] = useState({});
+  const touchStartX = useRef({});
+  const dragged = useRef({});
 
   const urlCategoryId = searchParams.get('category_id');
   const categoryId = propCategoryId !== null ? propCategoryId : urlCategoryId;
@@ -104,7 +107,7 @@ export default function ProductList({ limit = null, categoryId: propCategoryId =
   /* ── Loading Skeleton ── */
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-16">
         {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
           <div key={i} className="animate-pulse">
             <div className="aspect-[3/4] mb-6" style={{ background: '#f0eded' }} />
@@ -155,7 +158,7 @@ export default function ProductList({ limit = null, categoryId: propCategoryId =
   return (
     <div>
       {/* ── Product Gallery Grid ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-16">
         {products.map((product) => (
           <article 
             key={product.id} 
@@ -163,78 +166,181 @@ export default function ProductList({ limit = null, categoryId: propCategoryId =
             style={{ cursor: 'pointer' }}
             onClick={() => navigate(`/products/${product.slug}`)}
           >
+            {/* Image Container with touch+hover carousel */}
+            {(() => {
+              const allImgs = product.image_urls?.length > 0
+                ? product.image_urls
+                : (product.images?.length > 0 ? product.images : []);
+              const hasMultiple = allImgs.length > 1;
+              const currentIdx = cardImageIndex[product.id] || 0;
 
-            {/* Image Container */}
-            <div
-              className="aspect-[3/4] overflow-hidden mb-6 relative"
-              style={{ background: '#f6f3f2' }}
-            >
-              {product.image_urls?.length > 0 ? (
-                <img
-                  src={product.image_urls[0]}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
-                />
-              ) : product.images && product.images.length > 0 ? (
-                <img
-                  src={getImageUrl(product.images[0])}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
-                />
-              ) : (
-                <div
-                  className="w-full h-full flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #f0eded 0%, #e5e2e1 100%)' }}
-                >
-                  <span className="text-5xl" style={{ color: '#cfc5bc' }}>✦</span>
-                </div>
-              )}
+              const goToNext = () =>
+                setCardImageIndex(prev => ({ ...prev, [product.id]: (currentIdx + 1) % allImgs.length }));
+              const goToPrev = () =>
+                setCardImageIndex(prev => ({ ...prev, [product.id]: (currentIdx - 1 + allImgs.length) % allImgs.length }));
 
-              {/* Out of Stock overlay */}
-              {product.stock === 0 && (
+              return (
                 <div
-                  className="absolute inset-0 flex items-center justify-center"
-                  style={{ background: 'rgba(252,249,248,0.7)' }}
-                >
-                  <span
-                    className="text-[10px] uppercase tracking-widest font-bold px-4 py-2"
-                    style={{
-                      background: '#1b1b1c',
-                      color: '#f6f3f2',
-                      fontFamily: 'Manrope, sans-serif',
-                    }}
-                  >
-                    Out of Stock
-                  </span>
-                </div>
-              )}
-
-              {/* Quick Look overlay */}
-              {product.stock > 0 && (
-                <div
-                  className="absolute bottom-4 left-0 right-0 flex justify-center transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
-                >
-                  <button
-                    onClick={(e) => {
+                  className="aspect-[3/4] overflow-hidden mb-6 relative select-none"
+                  style={{ background: '#f6f3f2', touchAction: 'pan-y' }}
+                  /* Desktop drag swipe support */
+                  onMouseDown={e => {
+                    if (hasMultiple) {
+                      e.preventDefault();
+                      touchStartX.current[product.id] = e.clientX;
+                      dragged.current[product.id] = false;
+                    }
+                  }}
+                  onMouseUp={e => {
+                    if (!hasMultiple) return;
+                    const startX = touchStartX.current[product.id];
+                    if (startX == null) return;
+                    const diff = startX - e.clientX;
+                    if (Math.abs(diff) > 10) {
+                      dragged.current[product.id] = true;
+                    }
+                    if (Math.abs(diff) > 40) {
+                      diff > 0 ? goToNext() : goToPrev();
+                    }
+                    delete touchStartX.current[product.id];
+                  }}
+                  onMouseLeave={() => {
+                    if (touchStartX.current[product.id] != null) {
+                      delete touchStartX.current[product.id];
+                    }
+                  }}
+                  /* Prevent card navigation if dragging occurred */
+                  onClick={e => {
+                    if (dragged.current[product.id]) {
                       e.stopPropagation();
-                      handleAddToCart(product.id);
-                    }}
-                    disabled={addingToCart[product.id]}
-                    className="px-6 py-2 text-[10px] uppercase font-bold tracking-widest transition-opacity hover:opacity-80"
-                    style={{
-                      background: addedToCart[product.id] ? '#4c3e25' : '#fcf9f8',
-                      color: addedToCart[product.id] ? '#ffffff' : '#463f38',
-                      fontFamily: 'Manrope, sans-serif',
-                      boxShadow: '0 4px 16px rgba(27,27,28,0.12)',
-                    }}
-                  >
-                    {addingToCart[product.id] ? '...' : addedToCart[product.id] ? '✓ Added' : 'Add to Cart'}
-                  </button>
+                      e.preventDefault();
+                      dragged.current[product.id] = false;
+                    }
+                  }}
+                  /* Mobile: track touch start X */
+                  onTouchStart={e => {
+                    if (hasMultiple) touchStartX.current[product.id] = e.touches[0].clientX;
+                  }}
+                  /* Mobile: swipe left → next, swipe right → prev */
+                  onTouchEnd={e => {
+                    if (!hasMultiple) return;
+                    const startX = touchStartX.current[product.id];
+                    if (startX == null) return;
+                    const diff = startX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 40) {
+                      diff > 0 ? goToNext() : goToPrev();
+                    }
+                    delete touchStartX.current[product.id];
+                  }}
+                >
+                  {/* Sliding image strip */}
+                  {allImgs.length > 0 ? (
+                    <div
+                      className="flex h-full transition-transform duration-500 ease-in-out"
+                      style={{
+                        width: `${allImgs.length * 100}%`,
+                        transform: `translateX(-${currentIdx * (100 / allImgs.length)}%)`,
+                      }}
+                    >
+                      {allImgs.map((imgSrc, imgIdx) => (
+                        <img
+                          key={imgIdx}
+                          src={product.image_urls?.length > 0 ? imgSrc : getImageUrl(imgSrc)}
+                          alt={product.name}
+                          className="h-full object-cover"
+                          style={{ width: `${100 / allImgs.length}%` }}
+                          loading="lazy"
+                          draggable={false}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: 'linear-gradient(135deg, #f0eded 0%, #e5e2e1 100%)' }}
+                    >
+                      <span className="text-5xl" style={{ color: '#cfc5bc' }}>✦</span>
+                    </div>
+                  )}
+
+                  {/* Dots — always visible when multiple images */}
+                  {hasMultiple && (
+                    <div
+                      className="absolute left-0 right-0 flex justify-center gap-1.5"
+                      style={{ bottom: '10px', pointerEvents: 'auto' }}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      {allImgs.map((_, dotIdx) => (
+                        <button
+                          key={dotIdx}
+                          onClick={e => {
+                            e.stopPropagation();
+                            setCardImageIndex(prev => ({ ...prev, [product.id]: dotIdx }));
+                          }}
+                          style={{
+                            width: currentIdx === dotIdx ? '18px' : '6px',
+                            height: '6px',
+                            borderRadius: '3px',
+                            background: currentIdx === dotIdx
+                              ? 'rgba(70,63,56,0.9)'
+                              : 'rgba(70,63,56,0.3)',
+                            border: 'none',
+                            padding: 0,
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            flexShrink: 0,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Out of Stock overlay */}
+                  {product.stock === 0 && (
+                    <div
+                      className="absolute inset-0 flex items-center justify-center"
+                      style={{ background: 'rgba(252,249,248,0.7)' }}
+                    >
+                      <span
+                        className="text-[10px] uppercase tracking-widest font-bold px-4 py-2"
+                        style={{
+                          background: '#1b1b1c',
+                          color: '#f6f3f2',
+                          fontFamily: 'Manrope, sans-serif',
+                        }}
+                      >
+                        Out of Stock
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Add to Cart — visible on desktop hover only (mobile uses product page) */}
+                  {product.stock > 0 && (
+                    <div
+                      className="absolute left-0 right-0 flex justify-center transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
+                      style={{ bottom: hasMultiple ? '30px' : '16px' }}
+                    >
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleAddToCart(product.id);
+                        }}
+                        disabled={addingToCart[product.id]}
+                        className="px-6 py-2 text-[10px] uppercase font-bold tracking-widest transition-opacity hover:opacity-80"
+                        style={{
+                          background: addedToCart[product.id] ? '#4c3e25' : '#fcf9f8',
+                          color: addedToCart[product.id] ? '#ffffff' : '#463f38',
+                          fontFamily: 'Manrope, sans-serif',
+                          boxShadow: '0 4px 16px rgba(27,27,28,0.12)',
+                        }}
+                      >
+                        {addingToCart[product.id] ? '...' : addedToCart[product.id] ? '✓ Added' : 'Add to Cart'}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
 
             {/* Product Info */}
             <div className="space-y-1">

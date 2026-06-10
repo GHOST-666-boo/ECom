@@ -217,6 +217,7 @@ export default function AddressManager() {
                 <p>
                   {address.city}, {address.state} {address.pincode}
                 </p>
+                {address.phone && <p className="text-sm text-gray-500 mt-1">Phone: {address.phone}</p>}
               </div>
               <div className="flex gap-2">
                 <button

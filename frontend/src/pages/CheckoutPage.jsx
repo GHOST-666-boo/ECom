@@ -236,6 +236,7 @@ export default function CheckoutPage() {
                         <p className="text-sm leading-relaxed" style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}>
                           {address.line1}{address.line2 && `, ${address.line2}`}<br />
                           {address.city}, {address.state} {address.pincode}
+                          {address.phone && <><br /><span className="text-xs text-gray-500">Phone: {address.phone}</span></>}
                         </p>
                       </div>
                       <input

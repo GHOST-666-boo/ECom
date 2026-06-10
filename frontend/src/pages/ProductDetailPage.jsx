@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../lib/axios';
 import { getImageUrl } from '../lib/imageUrl';
@@ -24,6 +24,49 @@ export default function ProductDetailPage() {
   const [addingToCart, setAddingToCart] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  // Dynamic aspect ratio: store natural W/H ratio per image index
+  const [imgRatios, setImgRatios] = useState({});
+  const [imgLoading, setImgLoading] = useState(true);
+  // Gallery container ref + computed px height
+  const galleryRef = useRef(null);
+  const [galleryHeight, setGalleryHeight] = useState(480);
+
+  // Called when each image loads — record its natural aspect ratio
+  const handleImgLoad = useCallback((e, idx) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    if (naturalWidth && naturalHeight) {
+      setImgRatios(prev => ({ ...prev, [idx]: naturalWidth / naturalHeight }));
+    }
+    setImgLoading(false);
+  }, []);
+
+  // When switching images, show loading shimmer if ratio not yet known
+  const handleSelectImage = (idx) => {
+    setSelectedImage(idx);
+    if (!imgRatios[idx]) setImgLoading(true);
+  };
+
+  // Recompute height in px whenever ratio or container width changes
+  // Formula: height = min(containerWidth / ratio, 90vh)
+  // This is exact — no CSS % guesswork
+  useEffect(() => {
+    const el = galleryRef.current;
+    if (!el) return;
+
+    const compute = () => {
+      const w = el.offsetWidth;
+      const ratio = imgRatios[selectedImage] ?? 0.8;
+      const clamped = Math.min(Math.max(ratio, 0.5), 1.5);
+      const naturalH = w / clamped;          // height from aspect ratio
+      const maxH = window.innerHeight * 0.9; // 90vh in px
+      setGalleryHeight(Math.min(naturalH, maxH));
+    };
+
+    compute(); // run immediately
+    const ro = new ResizeObserver(compute); // re-run if container width changes
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [imgRatios, selectedImage]); // eslint-disable-line
 
   const images = product?.image_urls?.length > 0 ? product.image_urls : (product?.images?.length > 0 ? product.images : [null]);
 
@@ -136,20 +179,43 @@ export default function ProductDetailPage() {
 
         {/* ── Gallery Column ── */}
         <div className="lg:col-span-7 flex flex-col gap-8">
-          {/* Main Image */}
-          <div 
-            className="aspect-[4/5] max-h-[580px] w-full overflow-hidden cursor-zoom-in group/main relative shadow-sm mx-auto" 
-            style={{ background: '#f6f3f2' }}
+          {/* Main Image — Dynamic px height capped at 90vh */}
+          <div
+            ref={galleryRef}
+            className="w-full relative cursor-zoom-in group/main shadow-sm mx-auto overflow-hidden"
+            style={{
+              background: '#f6f3f2',
+              height: `${galleryHeight}px`,        // exact px, never > 90vh
+              transition: 'height 0.4s ease',       // smooth resize when switching
+            }}
             onClick={() => setIsLightboxOpen(true)}
           >
             {images[selectedImage] ? (
               <>
-                <img
-                  src={getImageUrl(images[selectedImage])}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover/main:scale-[1.02]"
-                />
-                {/* Subtle hover overlay for desktop */}
+                {/* Shimmer while loading */}
+                {imgLoading && (
+                  <div
+                    className="absolute inset-0 animate-pulse"
+                    style={{ background: 'linear-gradient(90deg, #f0eded 25%, #e8e4e3 50%, #f0eded 75%)' }}
+                  />
+                )}
+                {/* All images rendered (hidden), so onLoad fires for all → ratios recorded */}
+                {images.map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={getImageUrl(img)}
+                    alt={product.name}
+                    onLoad={e => handleImgLoad(e, idx)}
+                    className="absolute inset-0 w-full h-full transition-opacity duration-300"
+                    style={{
+                      objectFit: 'contain',
+                      opacity: idx === selectedImage ? 1 : 0,
+                      pointerEvents: idx === selectedImage ? 'auto' : 'none',
+                    }}
+                    draggable={false}
+                  />
+                ))}
+                {/* Hover zoom hint */}
                 <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/main:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
                   <span className="bg-[#fcf9f8]/95 backdrop-blur text-[#463f38] px-5 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold shadow-md">
                     Click to Zoom
@@ -158,7 +224,7 @@ export default function ProductDetailPage() {
               </>
             ) : (
               <div
-                className="w-full h-full flex items-center justify-center"
+                className="absolute inset-0 flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #f6f3f2 0%, #e5e2e1 100%)' }}
               >
                 <span className="text-8xl" style={{ color: '#cfc5bc' }}>✦</span>
@@ -166,15 +232,20 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Thumbnails */}
+          {/* Thumbnails - compact horizontal scroll strip */}
           {images.length > 1 && (
-            <div className="grid grid-cols-2 gap-8">
+            <div
+              className="flex gap-3 overflow-x-auto pb-1"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#cfc5bc transparent' }}
+            >
               {images.map((img, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setSelectedImage(idx)}
-                  className="aspect-square overflow-hidden transition-all"
+                  onClick={() => handleSelectImage(idx)}
+                  className="flex-shrink-0 overflow-hidden transition-all"
                   style={{
+                    width: '72px',
+                    height: '72px',
                     background: '#f6f3f2',
                     outline: selectedImage === idx ? '2px solid #4c3e25' : '2px solid transparent',
                     outlineOffset: '2px',
@@ -184,7 +255,7 @@ export default function ProductDetailPage() {
                     <img src={getImageUrl(img)} alt={`View ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span style={{ color: '#cfc5bc' }}>✦</span>
+                      <span style={{ color: '#cfc5bc', fontSize: '12px' }}>✦</span>
                     </div>
                   )}
                 </button>

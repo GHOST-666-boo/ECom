@@ -28,7 +28,7 @@
 }
 
 /* ---- Reset & Base ---- */
-*, *::before, *::after {
+*:not([class*="rounded"]), *:not([class*="rounded"])::before, *:not([class*="rounded"])::after {
   border-radius: 0;
 }
 
@@ -115,4 +115,26 @@ input:focus, select:focus, textarea:focus {
 ::selection {
   background: #f6dfbc;
   color: #251a05;
+}
+
+/* ---- Navigation Links Underline Animation ---- */
+.nav-link-underline {
+  position: relative;
+}
+
+.nav-link-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1.5px;
+  bottom: -4px;
+  left: 0;
+  background-color: #463f38;
+  transform-origin: bottom center;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-link-underline:hover::after {
+  transform: scaleX(1);
 }

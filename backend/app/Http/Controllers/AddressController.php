@@ -30,13 +30,14 @@ class AddressController extends Controller
             'data' => [
                 'addresses' => $addresses->map(function ($address) {
                     return [
-                        'id' => $address->id,
-                        'name' => $address->name,
-                        'line1' => $address->line1,
-                        'line2' => $address->line2,
-                        'city' => $address->city,
-                        'state' => $address->state,
-                        'pincode' => $address->pincode,
+                        'id'         => $address->id,
+                        'name'       => $address->name,
+                        'phone'      => $address->phone,
+                        'line1'      => $address->line1,
+                        'line2'      => $address->line2,
+                        'city'       => $address->city,
+                        'state'      => $address->state,
+                        'pincode'    => $address->pincode,
                         'is_default' => $address->is_default,
                         'created_at' => $address->created_at,
                         'updated_at' => $address->updated_at,
@@ -56,12 +57,13 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'line1' => 'required|string|max:255',
-            'line2' => 'nullable|string|max:255',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
-            'pincode' => ['required', 'string', 'regex:/^[0-9]{6}$/'],
+            'name'       => 'required|string|max:255',
+            'phone'      => ['required', 'string', 'regex:/^[6-9][0-9]{9}$/'],
+            'line1'      => 'required|string|max:255',
+            'line2'      => 'nullable|string|max:255',
+            'city'       => 'required|string|max:100',
+            'state'      => 'required|string|max:100',
+            'pincode'    => ['required', 'string', 'regex:/^[0-9]{6}$/'],
             'is_default' => 'nullable|boolean',
         ]);
 
@@ -76,13 +78,14 @@ class AddressController extends Controller
 
         // Create the address
         $address = Address::create([
-            'user_id' => $user->id,
-            'name' => $validated['name'],
-            'line1' => $validated['line1'],
-            'line2' => $validated['line2'] ?? null,
-            'city' => $validated['city'],
-            'state' => $validated['state'],
-            'pincode' => $validated['pincode'],
+            'user_id'    => $user->id,
+            'name'       => $validated['name'],
+            'phone'      => $validated['phone'],
+            'line1'      => $validated['line1'],
+            'line2'      => $validated['line2'] ?? null,
+            'city'       => $validated['city'],
+            'state'      => $validated['state'],
+            'pincode'    => $validated['pincode'],
             'is_default' => $validated['is_default'] ?? false,
         ]);
 
@@ -91,13 +94,14 @@ class AddressController extends Controller
             'message' => 'Address created successfully',
             'data' => [
                 'address' => [
-                    'id' => $address->id,
-                    'name' => $address->name,
-                    'line1' => $address->line1,
-                    'line2' => $address->line2,
-                    'city' => $address->city,
-                    'state' => $address->state,
-                    'pincode' => $address->pincode,
+                    'id'         => $address->id,
+                    'name'       => $address->name,
+                    'phone'      => $address->phone,
+                    'line1'      => $address->line1,
+                    'line2'      => $address->line2,
+                    'city'       => $address->city,
+                    'state'      => $address->state,
+                    'pincode'    => $address->pincode,
                     'is_default' => $address->is_default,
                     'created_at' => $address->created_at,
                     'updated_at' => $address->updated_at,
@@ -117,11 +121,12 @@ class AddressController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'line1' => 'required|string|max:255',
-            'line2' => 'nullable|string|max:255',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
+            'name'    => 'required|string|max:255',
+            'phone'   => ['required', 'string', 'regex:/^[6-9][0-9]{9}$/'],
+            'line1'   => 'required|string|max:255',
+            'line2'   => 'nullable|string|max:255',
+            'city'    => 'required|string|max:100',
+            'state'   => 'required|string|max:100',
             'pincode' => ['required', 'string', 'regex:/^[0-9]{6}$/'],
         ]);
 
@@ -139,11 +144,12 @@ class AddressController extends Controller
 
         // Update the address
         $address->update([
-            'name' => $validated['name'],
-            'line1' => $validated['line1'],
-            'line2' => $validated['line2'] ?? null,
-            'city' => $validated['city'],
-            'state' => $validated['state'],
+            'name'    => $validated['name'],
+            'phone'   => $validated['phone'],
+            'line1'   => $validated['line1'],
+            'line2'   => $validated['line2'] ?? null,
+            'city'    => $validated['city'],
+            'state'   => $validated['state'],
             'pincode' => $validated['pincode'],
         ]);
 
@@ -152,13 +158,14 @@ class AddressController extends Controller
             'message' => 'Address updated successfully',
             'data' => [
                 'address' => [
-                    'id' => $address->id,
-                    'name' => $address->name,
-                    'line1' => $address->line1,
-                    'line2' => $address->line2,
-                    'city' => $address->city,
-                    'state' => $address->state,
-                    'pincode' => $address->pincode,
+                    'id'         => $address->id,
+                    'name'       => $address->name,
+                    'phone'      => $address->phone,
+                    'line1'      => $address->line1,
+                    'line2'      => $address->line2,
+                    'city'       => $address->city,
+                    'state'      => $address->state,
+                    'pincode'    => $address->pincode,
                     'is_default' => $address->is_default,
                     'created_at' => $address->created_at,
                     'updated_at' => $address->updated_at,
@@ -241,6 +248,7 @@ class AddressController extends Controller
                 'address' => [
                     'id' => $address->id,
                     'name' => $address->name,
+                    'phone' => $address->phone,
                     'line1' => $address->line1,
                     'line2' => $address->line2,
                     'city' => $address->city,

@@ -62,8 +62,10 @@ class OrderForm
                     ->content(function ($record) {
                         if (!$record?->address_snapshot) return '—';
                         $a = $record->address_snapshot;
+                        $phone = $a['phone'] ?? null;
                         $parts = array_filter([
                             $a['name']    ?? null,
+                            $phone ? '📞 ' . $phone : null,
                             $a['line1']   ?? null,
                             $a['line2']   ?? null,
                             ($a['city'] ?? '') . ', ' . ($a['state'] ?? '') . ' - ' . ($a['pincode'] ?? ''),
