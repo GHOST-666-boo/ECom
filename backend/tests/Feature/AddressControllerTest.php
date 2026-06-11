@@ -53,6 +53,7 @@ class AddressControllerTest extends TestCase
     {
         $addressData = [
             'name' => 'John Doe',
+            'phone' => '9876543210',
             'line1' => '123 Main Street',
             'line2' => 'Apt 4B',
             'city' => 'Mumbai',
@@ -73,6 +74,7 @@ class AddressControllerTest extends TestCase
                     'address' => [
                         'id',
                         'name',
+                        'phone',
                         'line1',
                         'line2',
                         'city',
@@ -88,6 +90,7 @@ class AddressControllerTest extends TestCase
         $this->assertDatabaseHas('addresses', [
             'user_id' => $this->user->id,
             'name' => 'John Doe',
+            'phone' => '9876543210',
             'line1' => '123 Main Street',
             'city' => 'Mumbai',
             'state' => 'Maharashtra',
@@ -101,13 +104,14 @@ class AddressControllerTest extends TestCase
             ->postJson('/api/v1/user/addresses', []);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['name', 'line1', 'city', 'state', 'pincode']);
+            ->assertJsonValidationErrors(['name', 'phone', 'line1', 'city', 'state', 'pincode']);
     }
 
     public function test_address_creation_validates_pincode_format(): void
     {
         $addressData = [
             'name' => 'John Doe',
+            'phone' => '9876543210',
             'line1' => '123 Main Street',
             'city' => 'Mumbai',
             'state' => 'Maharashtra',
@@ -145,6 +149,7 @@ class AddressControllerTest extends TestCase
 
         $updatedData = [
             'name' => 'Jane Doe',
+            'phone' => '9876543210',
             'line1' => '456 Oak Avenue',
             'line2' => 'Suite 10',
             'city' => 'Delhi',
@@ -165,6 +170,7 @@ class AddressControllerTest extends TestCase
             'id' => $address->id,
             'user_id' => $this->user->id,
             'name' => 'Jane Doe',
+            'phone' => '9876543210',
             'line1' => '456 Oak Avenue',
             'city' => 'Delhi',
             'pincode' => '110001',
@@ -180,6 +186,7 @@ class AddressControllerTest extends TestCase
 
         $updatedData = [
             'name' => 'Hacker',
+            'phone' => '9876543210',
             'line1' => 'Malicious Street',
             'city' => 'Hackerville',
             'state' => 'Hack',
@@ -338,6 +345,7 @@ class AddressControllerTest extends TestCase
         // Create second address with is_default = true
         $addressData = [
             'name' => 'John Doe',
+            'phone' => '9876543210',
             'line1' => '123 Main Street',
             'city' => 'Mumbai',
             'state' => 'Maharashtra',

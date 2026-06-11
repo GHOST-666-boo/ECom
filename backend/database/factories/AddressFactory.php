@@ -20,6 +20,7 @@ class AddressFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => fake()->name(),
+            'phone' => '9876543210',
             'line1' => fake()->streetAddress(),
             'line2' => fake()->optional()->secondaryAddress(),
             'city' => fake()->city(),
