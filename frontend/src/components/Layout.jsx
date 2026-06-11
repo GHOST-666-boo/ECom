@@ -71,6 +71,7 @@ export default function Layout() {
             {[
               { to: '/', label: 'Home' },
               { to: '/products', label: 'Collection' },
+              { to: '/corporate-gifting', label: 'Corporate Gifting' },
               { to: '/contact', label: 'Contact' },
             ].map(({ to, label }) => (
               <Link
@@ -190,6 +191,7 @@ export default function Layout() {
             {[
               { to: '/', label: 'Home' },
               { to: '/products', label: 'Collection' },
+              { to: '/corporate-gifting', label: 'Corporate Gifting' },
               { to: '/contact', label: 'Contact' },
               ...(isAuthenticated ? [
                 { to: '/profile', label: 'Profile' },

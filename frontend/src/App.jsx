@@ -13,6 +13,7 @@ import OrderDetailPage from './pages/OrderDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import AddressesPage from './pages/AddressesPage';
 import ContactPage from './pages/ContactPage';
+import CorporateGiftingPage from './pages/CorporateGiftingPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="products" element={<ProductsPage />} />
           <Route path="products/:slug" element={<ProductDetailPage />} />
           <Route path="contact" element={<ContactPage />} />
+          <Route path="corporate-gifting" element={<CorporateGiftingPage />} />
 
           {/* Protected Routes */}
           <Route

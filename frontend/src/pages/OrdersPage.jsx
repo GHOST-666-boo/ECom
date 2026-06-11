@@ -67,7 +67,7 @@ export default function OrdersPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-2 border-[#4c3e25] border-t-transparent"></div>
           <p className="mt-4 text-gray-600">Loading orders...</p>
         </div>
       </div>

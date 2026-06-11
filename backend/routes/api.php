@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CorporateEnquiryController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\HomepageBentoController;
@@ -95,6 +96,9 @@ Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'uns
 
 // Contact form route
 Route::post('/contact', [ContactController::class, 'submit']);
+
+// Corporate gifting enquiry route
+Route::post('/corporate-enquiry', [CorporateEnquiryController::class, 'submit']);
 
 // Webhook routes (no authentication required - webhooks come from Razorpay servers)
 Route::post('/webhooks/razorpay', [WebhookController::class, 'razorpay']);

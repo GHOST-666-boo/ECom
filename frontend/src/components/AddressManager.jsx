@@ -99,7 +99,7 @@ export default function AddressManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#4c3e25] border-t-transparent"></div>
       </div>
     );
   }
