@@ -29,48 +29,57 @@ const STEPS = [
 ];
 const STATUS_ORDER = STEPS.map((s) => s.key);
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// ─── Styles matching Vriddhi metallic artisan / oat theme ──────────────────────
 const S = {
   page: {
     minHeight: '100vh',
-    background: '#f8f7f4',
-    padding: '24px 16px 48px',
-    fontFamily: "'Inter', 'Segoe UI', sans-serif",
+    background: 'var(--color-surface, #fcf9f8)',
+    padding: '40px 16px 64px',
+    fontFamily: '"Manrope", sans-serif',
   },
   inner: { maxWidth: '780px', margin: '0 auto' },
   backLink: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    color: '#c2782a', fontWeight: 600, fontSize: '0.9rem',
-    textDecoration: 'none', marginBottom: '20px',
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    color: 'var(--color-tertiary, #4c3e25)', fontWeight: 600, fontSize: '0.9rem',
+    textDecoration: 'none', marginBottom: '24px',
     transition: 'opacity .2s',
   },
   card: {
-    background: '#fff', borderRadius: '16px',
-    boxShadow: '0 2px 16px rgba(0,0,0,0.07)',
-    padding: '28px', marginBottom: '16px',
+    background: '#fff',
+    border: '1px solid var(--color-outline-variant, #cfc5bc)',
+    padding: '32px', marginBottom: '20px',
+    borderRadius: '4px',
+    boxShadow: '0 2px 8px rgba(70,63,56,0.03)',
   },
   sectionTitle: {
-    fontSize: '0.8rem', fontWeight: 700, color: '#888',
-    textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '16px',
+    fontFamily: '"Noto Serif", serif',
+    fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-primary, #463f38)',
+    textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '20px',
+    borderBottom: '1px solid var(--color-outline-variant, #cfc5bc)',
+    paddingBottom: '10px',
   },
 
   // Timeline card
   timelineCard: {
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%)',
-    borderRadius: '16px', padding: '28px 24px', marginBottom: '16px',
-    boxShadow: '0 8px 32px rgba(15,52,96,0.25)',
+    background: 'var(--color-surface-low, #f6f3f2)',
+    border: '1px solid var(--color-outline-variant, #cfc5bc)',
+    padding: '32px 28px', marginBottom: '20px',
+    borderRadius: '4px',
   },
   timelineTitle: {
-    color: 'rgba(255,255,255,0.65)', fontSize: '0.75rem', fontWeight: 700,
-    textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '28px',
+    fontFamily: '"Noto Serif", serif',
+    color: 'var(--color-primary, #463f38)', fontSize: '0.9rem', fontWeight: 700,
+    textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '20px',
+    borderBottom: '1px solid var(--color-outline-variant, #cfc5bc)',
+    paddingBottom: '10px',
   },
 
   // Tracking card
   trackingCard: {
-    background: 'linear-gradient(135deg, #1e3a5f 0%, #0f3460 100%)',
-    border: '1px solid rgba(194,120,42,0.35)',
-    borderRadius: '14px', padding: '20px 22px', marginBottom: '16px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+    background: 'var(--color-surface-low, #f6f3f2)',
+    border: '1px solid var(--color-outline-variant, #cfc5bc)',
+    padding: '24px 28px', marginBottom: '20px',
+    borderRadius: '4px',
   },
 };
 
@@ -86,14 +95,14 @@ function OrderTimeline({ status }) {
         <div style={S.timelineTitle}>📦 Order Status</div>
         <div style={{
           display: 'flex', alignItems: 'center', gap: '16px',
-          background: 'rgba(239,68,68,0.12)',
-          border: '1px solid rgba(239,68,68,0.35)',
-          borderRadius: '12px', padding: '18px 20px',
+          background: 'rgba(239,68,68,0.06)',
+          border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '4px', padding: '18px 20px',
         }}>
-          <span style={{ fontSize: '2.2rem' }}>❌</span>
+          <span style={{ fontSize: '2rem' }}>❌</span>
           <div>
-            <div style={{ color: '#f87171', fontWeight: 700, fontSize: '1.1rem' }}>Order Cancelled</div>
-            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.83rem', marginTop: '4px' }}>
+            <div style={{ color: '#ef4444', fontWeight: 700, fontSize: '1rem', fontFamily: '"Noto Serif", serif' }}>Order Cancelled</div>
+            <div style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.83rem', marginTop: '4px' }}>
               This order was cancelled. If you paid online, refund will be processed within 5–7 days.
             </div>
           </div>
@@ -106,7 +115,6 @@ function OrderTimeline({ status }) {
     <div style={S.timelineCard}>
       <div style={S.timelineTitle}>📦 Order Status</div>
 
-      {/* Mobile-friendly vertical layout on small screens via flex wrap */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative' }}>
         {STEPS.map((step, index) => {
           const isDone   = index <= currentIndex;
@@ -121,28 +129,29 @@ function OrderTimeline({ status }) {
               {index < STEPS.length - 1 && (
                 <div style={{
                   position: 'absolute', top: '22px', left: '50%',
-                  width: '100%', height: '3px',
+                  width: '100%', height: '2px',
                   background: index < currentIndex
-                    ? 'linear-gradient(90deg, #f97316, #c2782a)'
-                    : 'rgba(255,255,255,0.08)',
+                    ? 'var(--color-tertiary, #4c3e25)'
+                    : 'var(--color-outline-variant, #cfc5bc)',
                   transition: 'background 0.5s ease', zIndex: 0,
                 }} />
               )}
 
               {/* Icon circle */}
               <div style={{
-                width: '46px', height: '46px', borderRadius: '50%',
+                width: '44px', height: '44px', borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '1.25rem', position: 'relative', zIndex: 2,
+                fontSize: '1.1rem', position: 'relative', zIndex: 2,
                 background: isDone
-                  ? 'linear-gradient(135deg, #f97316, #c2782a)'
-                  : 'rgba(255,255,255,0.06)',
+                  ? 'var(--gradient-tertiary, linear-gradient(135deg, #4c3e25 0%, #65553a 100%))'
+                  : 'var(--color-surface, #fcf9f8)',
                 border: isActive
-                  ? '3px solid #fb923c'
-                  : isDone ? '3px solid #f97316' : '3px solid rgba(255,255,255,0.12)',
+                  ? '3px solid var(--color-tertiary, #4c3e25)'
+                  : isDone ? '3px solid var(--color-tertiary, #4c3e25)' : '1px solid var(--color-outline-variant, #cfc5bc)',
+                color: isDone ? '#fff' : 'var(--color-outline, #7e766e)',
                 boxShadow: isActive
-                  ? '0 0 20px rgba(249,115,22,0.7)'
-                  : isDone ? '0 0 10px rgba(249,115,22,0.3)' : 'none',
+                  ? '0 0 16px rgba(76,62,37,0.4)'
+                  : isDone ? '0 0 8px rgba(76,62,37,0.15)' : 'none',
                 transition: 'all 0.4s ease',
                 animation: isActive ? 'ord-pulse 2s infinite' : 'none',
               }}>
@@ -150,18 +159,18 @@ function OrderTimeline({ status }) {
               </div>
 
               {/* Label */}
-              <div style={{ marginTop: '10px', textAlign: 'center', padding: '0 2px' }}>
+              <div style={{ marginTop: '12px', textAlign: 'center', padding: '0 2px' }}>
                 <div style={{
-                  color: isDone ? '#fff' : 'rgba(255,255,255,0.28)',
+                  color: isDone ? 'var(--color-on-surface, #1b1b1c)' : 'var(--color-outline, #7e766e)',
                   fontWeight: isActive ? 700 : 500,
-                  fontSize: '0.72rem', lineHeight: 1.3,
+                  fontSize: '0.75rem', lineHeight: 1.3,
                   transition: 'color 0.4s ease',
                 }}>
                   {step.label}
                 </div>
                 {isActive && (
                   <div style={{
-                    color: '#fb923c', fontSize: '0.65rem',
+                    color: 'var(--color-tertiary, #4c3e25)', fontSize: '0.65rem',
                     marginTop: '4px', fontWeight: 700,
                     letterSpacing: '0.04em',
                   }}>
@@ -177,12 +186,14 @@ function OrderTimeline({ status }) {
       {/* Active step description */}
       {currentIndex >= 0 && (
         <div style={{
-          marginTop: '24px', padding: '12px 16px',
-          background: 'rgba(249,115,22,0.1)',
-          borderLeft: '3px solid #f97316',
-          borderRadius: '0 8px 8px 0',
+          marginTop: '28px', padding: '16px 20px',
+          background: 'var(--color-surface, #fcf9f8)',
+          borderLeft: '3px solid var(--color-tertiary, #4c3e25)',
+          borderRadius: '0 4px 4px 0',
+          border: '1px solid var(--color-outline-variant, #cfc5bc)',
+          borderLeftWidth: '3px',
         }}>
-          <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.82rem' }}>
+          <span style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.85rem' }}>
             {STEPS[currentIndex].desc}
           </span>
         </div>
@@ -190,8 +201,8 @@ function OrderTimeline({ status }) {
 
       <style>{`
         @keyframes ord-pulse {
-          0%,100% { box-shadow: 0 0 16px rgba(249,115,22,0.6); }
-          50% { box-shadow: 0 0 30px rgba(249,115,22,1); }
+          0%,100% { box-shadow: 0 0 12px rgba(76,62,37,0.4); }
+          50% { box-shadow: 0 0 24px rgba(76,62,37,0.7); }
         }
       `}</style>
     </div>
@@ -203,23 +214,24 @@ function TrackingCard({ trackingNumber, courierName }) {
 
   return (
     <div style={S.trackingCard}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+          <div style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
             🚚 Shipment Tracking
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <span style={{
-              fontFamily: 'monospace', fontSize: '1.05rem', fontWeight: 700,
-              color: '#fb923c', letterSpacing: '0.05em',
+              fontFamily: 'monospace', fontSize: '1.1rem', fontWeight: 700,
+              color: 'var(--color-tertiary, #4c3e25)', letterSpacing: '0.05em',
             }}>
               {trackingNumber}
             </span>
             {courierName && (
               <span style={{
-                background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
-                fontSize: '0.75rem', padding: '3px 10px', borderRadius: '20px',
+                background: 'var(--color-surface-container, #f0eded)', color: 'var(--color-on-surface-variant, #4d453f)',
+                fontSize: '0.75rem', padding: '4px 12px', borderRadius: '4px',
                 fontWeight: 600,
+                border: '1px solid var(--color-outline-variant, #cfc5bc)',
               }}>
                 {courierName}
               </span>
@@ -232,16 +244,15 @@ function TrackingCard({ trackingNumber, courierName }) {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              background: 'linear-gradient(135deg, #f97316, #c2782a)',
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              background: 'var(--gradient-tertiary, linear-gradient(135deg, #4c3e25 0%, #65553a 100%))',
               color: '#fff', fontWeight: 700, fontSize: '0.85rem',
-              padding: '10px 18px', borderRadius: '10px',
+              padding: '10px 20px', borderRadius: '4px',
               textDecoration: 'none',
-              boxShadow: '0 4px 12px rgba(249,115,22,0.4)',
-              transition: 'transform .2s, box-shadow .2s',
+              transition: 'transform .2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(249,115,22,0.55)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 12px rgba(249,115,22,0.4)'; }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
           >
             📍 Track Package
           </a>
@@ -256,7 +267,7 @@ function StatusBadge({ status }) {
     pending:    { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
     confirmed:  { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
     processing: { bg: '#ede9fe', color: '#5b21b6', label: 'Processing' },
-    shipped:    { bg: '#f3e8ff', color: '#6b21a8', label: 'Shipped' },
+    shipped:    { bg: '#e0f2fe', color: '#0369a1', label: 'Shipped' },
     delivered:  { bg: '#d1fae5', color: '#065f46', label: 'Delivered' },
     cancelled:  { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
   }[status] || { bg: '#f3f4f6', color: '#374151', label: status };
@@ -264,9 +275,10 @@ function StatusBadge({ status }) {
   return (
     <span style={{
       background: cfg.bg, color: cfg.color,
-      fontWeight: 700, fontSize: '0.82rem',
-      padding: '6px 14px', borderRadius: '20px',
+      fontWeight: 700, fontSize: '0.8rem',
+      padding: '6px 14px', borderRadius: '4px',
       textTransform: 'capitalize',
+      border: '1px solid rgba(0,0,0,0.05)',
     }}>
       {cfg.label}
     </span>
@@ -283,6 +295,39 @@ export default function OrderDetailPage() {
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState(null);
   const [cancelSuccess, setCancelSuccess] = useState(false);
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false);
+
+  const handleDownloadInvoice = async () => {
+    try {
+      setDownloadingInvoice(true);
+      let pdfUrl = null;
+      try {
+        const res = await axiosInstance.get(`/orders/${id}/invoice`);
+        if (res.data.success && res.data.invoice?.pdf_url) {
+          pdfUrl = res.data.invoice.pdf_url;
+        }
+      } catch (err) {
+        if (err.response?.status === 404) {
+          const genRes = await axiosInstance.post(`/orders/${id}/invoice`);
+          if (genRes.data.success && genRes.data.invoice?.pdf_url) {
+            pdfUrl = genRes.data.invoice.pdf_url;
+          }
+        } else {
+          throw err;
+        }
+      }
+
+      if (pdfUrl) {
+        window.open(pdfUrl, '_blank');
+      } else {
+        alert('Could not retrieve invoice PDF URL.');
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to download invoice.');
+    } finally {
+      setDownloadingInvoice(false);
+    }
+  };
 
   useEffect(() => { fetchOrder(); }, [id]);
 
@@ -291,7 +336,7 @@ export default function OrderDetailPage() {
       setLoading(true);
       setError(null);
       const res = await axiosInstance.get(`/orders/${id}`);
-      if (res.data.success) setOrder(res.data.order);  // Clean: res.data.order
+      if (res.data.success) setOrder(res.data.order);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load order details');
     } finally {
@@ -316,26 +361,24 @@ export default function OrderDetailPage() {
     }
   };
 
-  // ── Loading ──
   if (loading) return (
     <div style={{ ...S.page, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center' }}>
         <div style={{
           width: '48px', height: '48px', borderRadius: '50%',
-          border: '4px solid #f3f4f6', borderTopColor: '#f97316',
+          border: '4px solid var(--color-surface-container, #f0eded)', borderTopColor: 'var(--color-tertiary, #4c3e25)',
           animation: 'spin 0.8s linear infinite', margin: '0 auto 16px',
         }} />
-        <p style={{ color: '#888', fontSize: '0.9rem' }}>Loading order details…</p>
+        <p style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.9rem' }}>Loading order details…</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>
   );
 
-  // ── Error ──
   if (error) return (
     <div style={S.page}>
       <div style={S.inner}>
-        <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: '12px', padding: '16px', color: '#991b1b', marginBottom: '16px' }}>
+        <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: '4px', padding: '16px', color: '#991b1b', marginBottom: '16px' }}>
           {error}
         </div>
         <Link to="/orders" style={S.backLink}>← Back to Orders</Link>
@@ -360,21 +403,65 @@ export default function OrderDetailPage() {
 
         {/* Cancel success banner */}
         {cancelSuccess && (
-          <div style={{ background: '#d1fae5', border: '1px solid #6ee7b7', borderRadius: '12px', padding: '14px 18px', color: '#065f46', fontWeight: 600, marginBottom: '16px' }}>
+          <div style={{ background: '#d1fae5', border: '1px solid #6ee7b7', borderRadius: '4px', padding: '14px 18px', color: '#065f46', fontWeight: 600, marginBottom: '16px' }}>
             ✅ Order cancelled successfully.
           </div>
         )}
 
         {/* ── Header card ── */}
         <div style={S.card}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
             <div>
-              <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1a1a2e', margin: '0 0 6px' }}>
+              <h1 style={{ fontFamily: '"Noto Serif", serif', fontSize: '1.6rem', fontWeight: 700, color: 'var(--color-primary, #463f38)', margin: '0 0 8px' }}>
                 Order #{order.order_number}
               </h1>
-              <p style={{ color: '#888', fontSize: '0.85rem', margin: 0 }}>
+              <p style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.85rem', margin: 0 }}>
                 Placed on {new Date(order.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
+              {order.status === 'delivered' && (
+                <button
+                  onClick={handleDownloadInvoice}
+                  disabled={downloadingInvoice}
+                  style={{
+                    marginTop: '20px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'var(--gradient-tertiary, linear-gradient(135deg, #4c3e25 0%, #65553a 100%))',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: '0.85rem',
+                    padding: '12px 24px',
+                    borderRadius: '4px',
+                    border: 'none',
+                    cursor: downloadingInvoice ? 'not-allowed' : 'pointer',
+                    transition: 'opacity 0.2s',
+                    opacity: downloadingInvoice ? 0.7 : 1,
+                  }}
+                  onMouseEnter={e => { if (!downloadingInvoice) { e.currentTarget.style.opacity = 0.9; } }}
+                  onMouseLeave={e => { if (!downloadingInvoice) { e.currentTarget.style.opacity = 1; } }}
+                >
+                  {downloadingInvoice ? (
+                    <>
+                      <span style={{
+                        width: '14px',
+                        height: '14px',
+                        borderRadius: '50%',
+                        border: '2px solid #fff',
+                        borderTopColor: 'transparent',
+                        animation: 'spin 0.6s linear infinite',
+                        display: 'inline-block',
+                      }} />
+                      <span>Downloading…</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>📄</span>
+                      <span>Download Invoice</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
             <StatusBadge status={order.status} />
           </div>
@@ -394,26 +481,28 @@ export default function OrderDetailPage() {
         {/* ── Order items ── */}
         <div style={S.card}>
           <div style={S.sectionTitle}>🛍️ Order Items</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {order.items?.map((item) => (
-              <div key={item.id} style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+              <div key={item.id} style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <div style={{
-                  width: '72px', height: '72px', borderRadius: '10px',
-                  overflow: 'hidden', background: '#f3f4f6', flexShrink: 0,
+                  width: '72px', height: '72px', borderRadius: '4px',
+                  overflow: 'hidden', background: 'var(--color-surface-low, #f6f3f2)',
+                  flexShrink: 0,
+                  border: '1px solid var(--color-outline-variant, #cfc5bc)',
                 }}>
                   {item.product?.image_urls?.[0] ? (
                     <img src={item.product.image_urls[0]} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : item.product?.images?.[0] ? (
                     <img src={getImageUrl(item.product.images[0])} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '1.5rem' }}>🖼</div>
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-outline, #7e766e)', fontSize: '1.5rem' }}>🖼</div>
                   )}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, color: '#1a1a2e', fontSize: '0.95rem' }}>{item.product?.name || 'Product'}</div>
-                  <div style={{ color: '#888', fontSize: '0.82rem', marginTop: '3px' }}>Qty: {item.quantity}</div>
+                  <div style={{ fontWeight: 600, color: 'var(--color-on-surface, #1b1b1c)', fontSize: '0.95rem' }}>{item.product?.name || 'Product'}</div>
+                  <div style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.82rem', marginTop: '4px' }}>Qty: {item.quantity}</div>
                 </div>
-                <div style={{ fontWeight: 700, color: '#c2782a', fontSize: '0.95rem', whiteSpace: 'nowrap' }}>
+                <div style={{ fontWeight: 700, color: 'var(--color-tertiary, #4c3e25)', fontSize: '0.95rem', whiteSpace: 'nowrap' }}>
                   ₹{parseFloat(item.price).toLocaleString('en-IN')}
                 </div>
               </div>
@@ -424,8 +513,8 @@ export default function OrderDetailPage() {
         {/* ── Delivery address ── */}
         <div style={S.card}>
           <div style={S.sectionTitle}>📍 Delivery Address</div>
-          <div style={{ color: '#444', lineHeight: 1.7, fontSize: '0.9rem' }}>
-            <div style={{ fontWeight: 700, color: '#1a1a2e' }}>{order.address_snapshot?.name}</div>
+          <div style={{ color: 'var(--color-on-surface-variant, #4d453f)', lineHeight: 1.7, fontSize: '0.9rem' }}>
+            <div style={{ fontWeight: 700, color: 'var(--color-on-surface, #1b1b1c)', marginBottom: '4px' }}>{order.address_snapshot?.name}</div>
             <div>{order.address_snapshot?.line1}</div>
             {order.address_snapshot?.line2 && <div>{order.address_snapshot.line2}</div>}
             <div>{order.address_snapshot?.city}, {order.address_snapshot?.state} – {order.address_snapshot?.pincode}</div>
@@ -435,37 +524,38 @@ export default function OrderDetailPage() {
         {/* ── Payment summary ── */}
         <div style={S.card}>
           <div style={S.sectionTitle}>💳 Payment Summary</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-              <span style={{ color: '#888' }}>Payment Method</span>
-              <span style={{ fontWeight: 600, color: '#1a1a2e' }}>
+              <span style={{ color: 'var(--color-on-surface-variant, #4d453f)' }}>Payment Method</span>
+              <span style={{ fontWeight: 600, color: 'var(--color-on-surface, #1b1b1c)' }}>
                 {isCod ? '💵 Cash on Delivery' : '💳 Razorpay (Online)'}
               </span>
             </div>
 
             {order.payment_method === 'razorpay' && order.payment_id && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-                <span style={{ color: '#888' }}>Payment ID</span>
-                <span style={{ fontFamily: 'monospace', fontSize: '0.82rem', color: '#555' }}>{order.payment_id}</span>
+                <span style={{ color: 'var(--color-on-surface-variant, #4d453f)' }}>Payment ID</span>
+                <span style={{ fontFamily: 'monospace', fontSize: '0.82rem', color: 'var(--color-on-surface, #1b1b1c)' }}>{order.payment_id}</span>
               </div>
             )}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-              <span style={{ color: '#888' }}>Payment Status</span>
+              <span style={{ color: 'var(--color-on-surface-variant, #4d453f)' }}>Payment Status</span>
               <span style={{
                 fontWeight: 700,
                 color: order.payment_status === 'paid' ? '#065f46' : '#92400e',
                 background: order.payment_status === 'paid' ? '#d1fae5' : '#fef3c7',
-                padding: '2px 10px', borderRadius: '12px', fontSize: '0.78rem',
+                padding: '3px 12px', borderRadius: '4px', fontSize: '0.78rem',
+                border: '1px solid rgba(0,0,0,0.02)',
               }}>
                 {order.payment_status === 'paid' ? '✅ Paid' : isCod ? '⏳ Pay on Delivery' : '⏳ Pending'}
               </span>
             </div>
 
-            <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 700, color: '#1a1a2e', fontSize: '1rem' }}>Total Amount</span>
-              <span style={{ fontWeight: 800, color: '#c2782a', fontSize: '1.15rem' }}>
+            <div style={{ borderTop: '1px solid var(--color-outline-variant, #cfc5bc)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 700, color: 'var(--color-on-surface, #1b1b1c)', fontSize: '1rem' }}>Total Amount</span>
+              <span style={{ fontWeight: 800, color: 'var(--color-tertiary, #4c3e25)', fontSize: '1.25rem' }}>
                 ₹{parseFloat(order.total).toLocaleString('en-IN')}
               </span>
             </div>
@@ -477,15 +567,14 @@ export default function OrderDetailPage() {
           <button
             onClick={() => setShowCancelModal(true)}
             style={{
-              width: '100%', padding: '14px', borderRadius: '12px', border: 'none',
+              width: '100%', padding: '14px', borderRadius: '4px', border: 'none',
               background: 'linear-gradient(135deg, #ef4444, #dc2626)',
               color: '#fff', fontWeight: 700, fontSize: '0.95rem',
               cursor: 'pointer', marginTop: '4px',
-              boxShadow: '0 4px 14px rgba(239,68,68,0.3)',
-              transition: 'transform .2s, box-shadow .2s',
+              transition: 'opacity .2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = 0.9; }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = 1; }}
           >
             Cancel Order
           </button>
@@ -495,25 +584,26 @@ export default function OrderDetailPage() {
       {/* ── Cancel modal ── */}
       {showCancelModal && (
         <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 50, padding: '16px',
         }}>
           <div style={{
-            background: '#fff', borderRadius: '20px', padding: '32px',
+            background: '#fff', borderRadius: '4px', padding: '32px',
             maxWidth: '420px', width: '100%',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+            border: '1px solid var(--color-outline-variant, #cfc5bc)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
           }}>
             <div style={{ fontSize: '2.5rem', marginBottom: '12px', textAlign: 'center' }}>⚠️</div>
-            <h3 style={{ fontWeight: 800, color: '#1a1a2e', fontSize: '1.2rem', textAlign: 'center', margin: '0 0 10px' }}>
+            <h3 style={{ fontFamily: '"Noto Serif", serif', fontWeight: 700, color: 'var(--color-primary, #463f38)', fontSize: '1.25rem', textAlign: 'center', margin: '0 0 12px' }}>
               Cancel this order?
             </h3>
-            <p style={{ color: '#666', fontSize: '0.88rem', textAlign: 'center', margin: '0 0 20px' }}>
+            <p style={{ color: 'var(--color-on-surface-variant, #4d453f)', fontSize: '0.88rem', textAlign: 'center', margin: '0 0 24px' }}>
               Order <strong>{order.order_number}</strong> will be cancelled. This cannot be undone.
             </p>
 
             {cancelError && (
-              <div style={{ background: '#fee2e2', borderRadius: '10px', padding: '12px', color: '#991b1b', fontSize: '0.84rem', marginBottom: '16px' }}>
+              <div style={{ background: '#fee2e2', borderRadius: '4px', padding: '12px', color: '#991b1b', fontSize: '0.84rem', marginBottom: '16px' }}>
                 {cancelError}
               </div>
             )}
@@ -523,9 +613,9 @@ export default function OrderDetailPage() {
                 onClick={() => { setShowCancelModal(false); setCancelError(null); }}
                 disabled={cancelling}
                 style={{
-                  flex: 1, padding: '12px', borderRadius: '10px',
-                  border: '2px solid #e5e7eb', background: '#fff',
-                  fontWeight: 700, color: '#555', cursor: 'pointer', fontSize: '0.9rem',
+                  flex: 1, padding: '12px', borderRadius: '4px',
+                  border: '1px solid var(--color-outline-variant, #cfc5bc)', background: '#fff',
+                  fontWeight: 700, color: 'var(--color-on-surface-variant, #4d453f)', cursor: 'pointer', fontSize: '0.9rem',
                 }}
               >
                 Keep Order
@@ -534,7 +624,7 @@ export default function OrderDetailPage() {
                 onClick={handleCancelOrder}
                 disabled={cancelling}
                 style={{
-                  flex: 1, padding: '12px', borderRadius: '10px', border: 'none',
+                  flex: 1, padding: '12px', borderRadius: '4px', border: 'none',
                   background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                   color: '#fff', fontWeight: 700, fontSize: '0.9rem',
                   cursor: cancelling ? 'not-allowed' : 'pointer',

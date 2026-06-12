@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Models\Category;
 use App\Models\Product;
+use App\Rules\ValidHsnCode;
 use App\Services\ImageStorageService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -24,7 +26,19 @@ class ProductForm
                     ->searchable()
                     ->preload()
                     ->required()
-                    ->helperText('Select the product category'),
+                    ->live()  // Enables reactivity — triggers afterStateUpdated on change
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        // Auto-fill HSN + GST from selected category (if not already set)
+                        if ($state) {
+                            $category = Category::find($state);
+                            if ($category) {
+                                $set('hsn_code', $category->hsn_code);
+                                $set('gst_rate', $category->gst_rate);
+                            }
+                        }
+                    })
+                    ->helperText('Selecting a category will auto-fill HSN Code and GST Rate below.')
+                    ->columnSpanFull(),
                 
                 TextInput::make('name')
                     ->required()
@@ -73,6 +87,45 @@ class ProductForm
                     ->integer()
                     ->helperText('Available stock quantity'),
                 
+                // ── GST Fields ─────────────────────────────────────────────────────
+                // Auto-filled from category on selection. Admin can override or clear.
+                // If left blank, the value from the category is used at invoice time.
+
+                TextInput::make('hsn_code')
+                    ->label('HSN Code (Product Override)')
+                    ->maxLength(8)
+                    ->nullable()
+                    ->rule(new ValidHsnCode())
+                    ->helperText(function (callable $get) {
+                        $categoryId = $get('category_id');
+                        if ($categoryId) {
+                            $category = Category::find($categoryId);
+                            if ($category?->hsn_code) {
+                                return "Leave blank to use category default (HSN: {$category->hsn_code})";
+                            }
+                        }
+                        return 'Leave blank to use category default HSN code. Set here to override for this product only.';
+                    }),
+
+                TextInput::make('gst_rate')
+                    ->label('GST Rate % (Product Override)')
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->step(0.01)
+                    ->suffix('%')
+                    ->nullable()
+                    ->helperText(function (callable $get) {
+                        $categoryId = $get('category_id');
+                        if ($categoryId) {
+                            $category = Category::find($categoryId);
+                            if ($category?->gst_rate !== null) {
+                                return "Leave blank to use category default (GST: {$category->gst_rate}%)";
+                            }
+                        }
+                        return 'Leave blank to use category default GST rate. Set here to override for this product only.';
+                    }),
+
                 FileUpload::make('images')
                     ->label('Product Images')
                     ->image()
@@ -93,7 +146,8 @@ class ProductForm
                 Toggle::make('is_active')
                     ->label('Active')
                     ->default(true)
-                    ->helperText('Only active products are visible to customers'),
+                    ->helperText('Only active products are visible to customers')
+                    ->columnSpanFull(),
             ]);
     }
 }

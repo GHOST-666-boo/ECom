@@ -17,12 +17,15 @@ class Category extends Model
         'image',
         'parent_id',
         'is_active',
+        'hsn_code',
+        'gst_rate',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'gst_rate'  => 'decimal:2',
         ];
     }
 

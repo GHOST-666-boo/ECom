@@ -21,15 +21,18 @@ class Product extends Model
         'stock',
         'images',
         'is_active',
+        'hsn_code',
+        'gst_rate',
     ];
 
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
-            'stock' => 'integer',
-            'images' => 'array',
-            'is_active' => 'boolean',
+            'price'    => 'decimal:2',
+            'gst_rate' => 'decimal:2',
+            'stock'    => 'integer',
+            'images'   => 'array',
+            'is_active'=> 'boolean',
         ];
     }
 

@@ -61,4 +61,12 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    /**
+     * Get the invoice for this order.
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
 }

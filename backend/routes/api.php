@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CorporateEnquiryController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\HomepageBentoController;
@@ -77,6 +78,18 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Payment routes
     Route::post('/payments/razorpay/create', [OrderController::class, 'createRazorpayOrder']);
+
+    // ─── Invoice routes ───────────────────────────────────────────────────────
+    Route::post('/orders/{order}/invoice',        [InvoiceController::class, 'generate']);
+    Route::get('/orders/{order}/invoice',         [InvoiceController::class, 'show']);
+    Route::get('/orders/{order}/invoice/pdf',     [InvoiceController::class, 'downloadPDF']);
+    Route::post('/orders/{order}/invoice/cancel', [InvoiceController::class, 'cancelInvoice']);
+
+    // Seller: own invoice history
+    Route::get('/seller/invoices', [InvoiceController::class, 'sellerIndex']);
+
+    // Admin: all invoices
+    Route::get('/admin/invoices', [InvoiceController::class, 'adminIndex']);
 });
 
 // Legacy route (can be removed later)

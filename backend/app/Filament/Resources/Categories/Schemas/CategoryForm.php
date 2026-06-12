@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Models\Category;
+use App\Rules\ValidHsnCode;
 use App\Services\ImageStorageService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -35,7 +36,26 @@ class CategoryForm
                     ->searchable()
                     ->preload()
                     ->nullable()
-                    ->helperText('Leave empty for top-level category'),
+                    ->helperText('Leave empty for top-level category')
+                    ->columnSpanFull(),
+
+                // ── GST Fields ─────────────────────────────────────────────
+                TextInput::make('hsn_code')
+                    ->label('HSN Code')
+                    ->maxLength(8)
+                    ->nullable()
+                    ->rule(new ValidHsnCode())
+                    ->helperText('4–8 digit HSN code. Default for all products in this category (e.g. 6117 for knitted accessories).'),
+
+                TextInput::make('gst_rate')
+                    ->label('GST Rate (%)')
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->step(0.01)
+                    ->suffix('%')
+                    ->nullable()
+                    ->helperText('Default GST rate for products in this category (e.g. 12.00 for 12%). Leave blank if no GST applies.'),
                 
                 FileUpload::make('image')
                     ->label('Category Image')
@@ -49,12 +69,14 @@ class CategoryForm
                     ->saveUploadedFileUsing(function ($file) {
                         $imageService = app(ImageStorageService::class);
                         return $imageService->uploadImage($file, 'categories');
-                    }),
+                    })
+                    ->columnSpanFull(),
                 
                 Toggle::make('is_active')
                     ->label('Active')
                     ->default(true)
-                    ->helperText('Only active categories are visible to customers'),
+                    ->helperText('Only active categories are visible to customers')
+                    ->columnSpanFull(),
             ]);
     }
 }

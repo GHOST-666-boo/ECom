@@ -17,6 +17,7 @@ export default function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [showAddressForm, setShowAddressForm] = useState(false);
+  const [addressToEdit, setAddressToEdit] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
@@ -48,6 +49,7 @@ export default function CheckoutPage() {
 
   const handleAddressSuccess = () => {
     setShowAddressForm(false);
+    setAddressToEdit(null);
     fetchAddresses();
   };
 
@@ -220,7 +222,7 @@ export default function CheckoutPage() {
                       }}
                     >
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-1">
+                        <div className="flex items-center gap-3 mb-1 w-full">
                           <p className="font-medium text-sm" style={{ color: '#1b1b1c', fontFamily: 'Manrope, sans-serif' }}>
                             {address.name}
                           </p>
@@ -232,6 +234,18 @@ export default function CheckoutPage() {
                               Default
                             </span>
                           )}
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setAddressToEdit(address);
+                              setShowAddressForm(true);
+                            }}
+                            className="text-xs font-semibold ml-auto transition-opacity hover:opacity-60"
+                            style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
+                          >
+                            Edit
+                          </button>
                         </div>
                         <p className="text-sm leading-relaxed" style={{ color: '#4d453f', fontFamily: 'Manrope, sans-serif' }}>
                           {address.line1}{address.line2 && `, ${address.line2}`}<br />
@@ -254,7 +268,10 @@ export default function CheckoutPage() {
               )}
 
               <button
-                onClick={() => setShowAddressForm(true)}
+                onClick={() => {
+                  setAddressToEdit(null);
+                  setShowAddressForm(true);
+                }}
                 className="text-sm font-medium transition-opacity hover:opacity-60"
                 style={{ color: '#4c3e25', fontFamily: 'Manrope, sans-serif' }}
               >
@@ -441,9 +458,16 @@ export default function CheckoutPage() {
               className="text-2xl italic mb-6"
               style={{ fontFamily: 'Noto Serif, serif', color: '#463f38' }}
             >
-              Add New Address
+              {addressToEdit ? 'Edit Address' : 'Add New Address'}
             </h2>
-            <AddressForm onSuccess={handleAddressSuccess} onCancel={() => setShowAddressForm(false)} />
+            <AddressForm
+              address={addressToEdit}
+              onSuccess={handleAddressSuccess}
+              onCancel={() => {
+                setShowAddressForm(false);
+                setAddressToEdit(null);
+              }}
+            />
           </div>
         </div>
       )}

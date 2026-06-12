@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
+use App\Observers\OrderObserver;
+use App\Services\InvoiceService;
 use Illuminate\Support\ServiceProvider;
 use Razorpay\Api\Api;
 
@@ -19,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
                 config('services.razorpay.key_secret')
             );
         });
+
+        // Register InvoiceService as singleton
+        $this->app->singleton(InvoiceService::class, fn ($app) => new InvoiceService());
     }
 
     /**
@@ -26,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register Order Observer — auto-generates invoice on 'delivered' status
+        Order::observe(OrderObserver::class);
     }
 }
