@@ -20,6 +20,12 @@ class FilamentAdminAuth
         // Check if user is authenticated and has admin role
         // Only check role if user is authenticated (Authenticate middleware runs first)
         if ($user && $user->role !== 'admin') {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Access denied. Admin role required.',
+                ], 403);
+            }
             abort(403, 'Access denied. Admin role required.');
         }
 

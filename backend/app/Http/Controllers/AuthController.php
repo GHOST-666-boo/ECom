@@ -12,6 +12,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -73,7 +74,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'user' => $user,
+                'user' => new UserResource($user),
                 'token' => $token,
             ],
         ]);
@@ -129,7 +130,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $request->user(),
+                'user' => new UserResource($request->user()),
             ],
         ]);
     }
@@ -142,7 +143,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $request->user(),
+                'user' => new UserResource($request->user()),
             ],
         ]);
     }
@@ -164,7 +165,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Profile updated successfully',
             'data' => [
-                'user' => $user->fresh(),
+                'user' => new UserResource($user->fresh()),
             ],
         ]);
     }
@@ -233,17 +234,22 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Google authentication successful',
                 'data' => [
-                    'user' => $user,
+                    'user' => new UserResource($user),
                     'token' => $token,
                 ],
             ]);
 
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Google authentication failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Google authentication failed.',
                 'errors' => [
-                    'id_token' => ['Failed to verify Google ID token: ' . $e->getMessage()],
+                    'id_token' => ['Failed to verify Google ID token. Please try again.'],
                 ],
             ], 401);
         }

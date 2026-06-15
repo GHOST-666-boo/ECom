@@ -73,9 +73,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}/cancel', [OrderController::class, 'cancel']);
     
-    // Admin order routes
-    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
-    
     // Payment routes
     Route::post('/payments/razorpay/create', [OrderController::class, 'createRazorpayOrder']);
 
@@ -83,13 +80,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders/{order}/invoice',        [InvoiceController::class, 'generate']);
     Route::get('/orders/{order}/invoice',         [InvoiceController::class, 'show']);
     Route::get('/orders/{order}/invoice/pdf',     [InvoiceController::class, 'downloadPDF']);
-    Route::post('/orders/{order}/invoice/cancel', [InvoiceController::class, 'cancelInvoice']);
 
     // Seller: own invoice history
     Route::get('/seller/invoices', [InvoiceController::class, 'sellerIndex']);
 
-    // Admin: all invoices
-    Route::get('/admin/invoices', [InvoiceController::class, 'adminIndex']);
+    // Admin routes (require admin role)
+    Route::middleware('admin')->group(function () {
+        Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
+        Route::post('/orders/{order}/invoice/cancel', [InvoiceController::class, 'cancelInvoice']);
+        Route::get('/admin/invoices', [InvoiceController::class, 'adminIndex']);
+    });
 });
 
 // Legacy route (can be removed later)

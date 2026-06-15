@@ -206,15 +206,13 @@ class InvoiceController extends Controller
             $query->where('invoice_number', 'like', "VRD-INV-{$request->financial_year}-%");
         }
 
-        $invoices = $query->paginate(15);
+        $invoices = $query->cursorPaginate(15);
 
         return response()->json([
             'success'  => true,
             'invoices' => InvoiceResource::collection($invoices),
             'meta'     => [
-                'total'        => $invoices->total(),
-                'current_page' => $invoices->currentPage(),
-                'last_page'    => $invoices->lastPage(),
+                'next_cursor' => $invoices->nextCursor()?->encode(),
                 'per_page'     => $invoices->perPage(),
             ],
         ]);
@@ -263,15 +261,13 @@ class InvoiceController extends Controller
             $query->where('invoice_type', $request->invoice_type);
         }
 
-        $invoices = $query->paginate(25);
+        $invoices = $query->cursorPaginate(25);
 
         return response()->json([
             'success'  => true,
             'invoices' => InvoiceResource::collection($invoices),
             'meta'     => [
-                'total'        => $invoices->total(),
-                'current_page' => $invoices->currentPage(),
-                'last_page'    => $invoices->lastPage(),
+                'next_cursor' => $invoices->nextCursor()?->encode(),
                 'per_page'     => $invoices->perPage(),
             ],
         ]);
