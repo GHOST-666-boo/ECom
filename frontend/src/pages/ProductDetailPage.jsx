@@ -46,6 +46,87 @@ export default function ProductDetailPage() {
     if (!imgRatios[idx]) setImgLoading(true);
   };
 
+  const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
+  const touchStart = useRef(false);
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      dragStartX.current = e.touches[0].clientX;
+      dragStartY.current = e.touches[0].clientY;
+      touchStart.current = true;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStart.current) return;
+    touchStart.current = false;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const diffX = dragStartX.current - touchEndX;
+    const diffY = dragStartY.current - touchEndY;
+    
+    if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        setSelectedImage(prev => (prev === images.length - 1 ? 0 : prev + 1));
+      } else {
+        setSelectedImage(prev => (prev === 0 ? images.length - 1 : prev - 1));
+      }
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    dragStartX.current = e.clientX;
+    dragStartY.current = e.clientY;
+    touchStart.current = true;
+  };
+
+  const handleMouseUp = (e) => {
+    if (!touchStart.current) return;
+    touchStart.current = false;
+    
+    const diffX = dragStartX.current - e.clientX;
+    const diffY = dragStartY.current - e.clientY;
+    
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        setSelectedImage(prev => (prev === images.length - 1 ? 0 : prev + 1));
+      } else {
+        setSelectedImage(prev => (prev === 0 ? images.length - 1 : prev - 1));
+      }
+    } else if (Math.abs(diffX) < 8 && Math.abs(diffY) < 8) {
+      setIsLightboxOpen(true);
+    }
+  };
+
+  // Inspect / right-click disable logic
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'F12') {
+        e.preventDefault();
+      }
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.key === 'i' || e.key === 'j' || e.key === 'c')) {
+        e.preventDefault();
+      }
+      if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('contextmenu', handleContextMenu);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('contextmenu', handleContextMenu);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   // Recompute height in px whenever ratio or container width changes
   // Formula: height = min(containerWidth / ratio, 90vh)
   // This is exact — no CSS % guesswork
@@ -178,17 +259,20 @@ export default function ProductDetailPage() {
       <section className="max-w-screen-2xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 py-12">
 
         {/* ── Gallery Column ── */}
-        <div className="lg:col-span-7 flex flex-col gap-8">
+        <div className="lg:col-span-7 flex flex-col">
           {/* Main Image — Dynamic px height capped at 90vh */}
           <div
             ref={galleryRef}
-            className="w-full relative cursor-zoom-in group/main shadow-sm mx-auto overflow-hidden"
+            className="w-full relative cursor-zoom-in group/main shadow-sm mx-auto overflow-hidden select-none"
             style={{
               background: '#f6f3f2',
               height: `${galleryHeight}px`,        // exact px, never > 90vh
               transition: 'height 0.4s ease',       // smooth resize when switching
             }}
-            onClick={() => setIsLightboxOpen(true)}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {images[selectedImage] ? (
               <>
@@ -206,11 +290,11 @@ export default function ProductDetailPage() {
                     src={getImageUrl(img)}
                     alt={product.name}
                     onLoad={e => handleImgLoad(e, idx)}
-                    className="absolute inset-0 w-full h-full transition-opacity duration-300"
+                    className="absolute inset-0 w-full h-full transition-opacity duration-300 select-none pointer-events-none"
                     style={{
                       objectFit: 'contain',
                       opacity: idx === selectedImage ? 1 : 0,
-                      pointerEvents: idx === selectedImage ? 'auto' : 'none',
+                      pointerEvents: 'none',
                     }}
                     draggable={false}
                   />
@@ -221,6 +305,79 @@ export default function ProductDetailPage() {
                     Click to Zoom
                   </span>
                 </div>
+
+                {/* Side Navigation Buttons */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImage(prev => (prev === 0 ? images.length - 1 : prev - 1));
+                      }}
+                      onMouseDown={e => e.stopPropagation()}
+                      onMouseUp={e => e.stopPropagation()}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-[#fcf9f8]/80 hover:bg-[#fcf9f8] backdrop-blur-md rounded-full shadow-md text-[#463f38] transition-all duration-300 opacity-0 group-hover/main:opacity-100 focus:opacity-100 hover:scale-105 active:scale-95"
+                      style={{ cursor: 'pointer' }}
+                      aria-label="Previous image"
+                    >
+                      <span className="text-xl font-light">⟨</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImage(prev => (prev === images.length - 1 ? 0 : prev + 1));
+                      }}
+                      onMouseDown={e => e.stopPropagation()}
+                      onMouseUp={e => e.stopPropagation()}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-[#fcf9f8]/80 hover:bg-[#fcf9f8] backdrop-blur-md rounded-full shadow-md text-[#463f38] transition-all duration-300 opacity-0 group-hover/main:opacity-100 focus:opacity-100 hover:scale-105 active:scale-95"
+                      style={{ cursor: 'pointer' }}
+                      aria-label="Next image"
+                    >
+                      <span className="text-xl font-light">⟩</span>
+                    </button>
+                  </>
+                )}
+
+                {/* Watermark Logo */}
+                <img
+                  src="/logo-white.png"
+                  alt="Watermark"
+                  className={`absolute z-30 h-8 md:h-10 opacity-90 select-none pointer-events-none mix-blend-difference transition-all duration-300 ${
+                    images.length > 1 ? 'bottom-20 right-4' : 'bottom-4 right-4'
+                  }`}
+                />
+
+                {/* Thumbnails overlaid on top of main image at bottom */}
+                {images.length > 1 && (
+                  <div 
+                    className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2 px-2.5 py-1.5 bg-[#fcf9f8]/40 backdrop-blur-md border border-[#cfc5bc]/10 shadow-lg rounded-xl max-w-[95%] overflow-x-auto"
+                    onClick={e => e.stopPropagation()} // prevent clicking thumbnails from zooming
+                    onMouseDown={e => e.stopPropagation()} // prevent dragging when clicking thumbnails
+                    onMouseUp={e => e.stopPropagation()}
+                  >
+                    {images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSelectImage(idx)}
+                        className="flex-shrink-0 w-11 h-11 overflow-hidden transition-all duration-300"
+                        style={{
+                          background: '#f6f3f2',
+                          border: selectedImage === idx ? '2px solid #463f38' : '2px solid transparent',
+                          borderRadius: '6px',
+                          transform: selectedImage === idx ? 'scale(1.05)' : 'none',
+                        }}
+                      >
+                        {img ? (
+                          <img src={getImageUrl(img)} alt={`View ${idx + 1}`} className="w-full h-full object-cover pointer-events-none select-none" loading="lazy" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span style={{ color: '#cfc5bc', fontSize: '10px' }}>✦</span>
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </>
             ) : (
               <div
@@ -231,37 +388,6 @@ export default function ProductDetailPage() {
               </div>
             )}
           </div>
-
-          {/* Thumbnails - compact horizontal scroll strip */}
-          {images.length > 1 && (
-            <div
-              className="flex gap-3 overflow-x-auto pb-1"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: '#cfc5bc transparent' }}
-            >
-              {images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSelectImage(idx)}
-                  className="flex-shrink-0 overflow-hidden transition-all"
-                  style={{
-                    width: '72px',
-                    height: '72px',
-                    background: '#f6f3f2',
-                    outline: selectedImage === idx ? '2px solid #4c3e25' : '2px solid transparent',
-                    outlineOffset: '2px',
-                  }}
-                >
-                  {img ? (
-                    <img src={getImageUrl(img)} alt={`View ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span style={{ color: '#cfc5bc', fontSize: '12px' }}>✦</span>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* ── Product Info Column ── */}
@@ -482,15 +608,23 @@ export default function ProductDetailPage() {
 
           {/* Centered Image display container */}
           <div
-            className="relative max-w-full max-h-[85vh] flex flex-col items-center justify-center animate-in zoom-in-95 duration-300"
+            className="relative max-w-full max-h-[85vh] flex flex-col items-center justify-center animate-in zoom-in-95 duration-300 mb-16"
             onClick={e => e.stopPropagation()}
           >
-            <img
-              src={getImageUrl(images[selectedImage])}
-              alt={product.name}
-              className="max-w-full max-h-[80vh] object-contain shadow-2xl"
-              style={{ border: '1px solid rgba(255,255,255,0.05)' }}
-            />
+            <div className="relative">
+              <img
+                src={getImageUrl(images[selectedImage])}
+                alt={product.name}
+                className="max-w-full max-h-[75vh] object-contain shadow-2xl"
+                style={{ border: '1px solid rgba(255,255,255,0.05)' }}
+              />
+              {/* Lightbox Watermark */}
+              <img
+                src="/logo-white.png"
+                alt="Watermark"
+                className="absolute bottom-4 right-4 z-30 h-8 md:h-10 opacity-90 select-none pointer-events-none mix-blend-difference"
+              />
+            </div>
             {/* Caption */}
             <div className="mt-4 text-center">
               <span className="text-white/80 text-sm tracking-widest uppercase font-semibold" style={{ fontFamily: 'Manrope, sans-serif' }}>
@@ -503,6 +637,36 @@ export default function ProductDetailPage() {
               )}
             </div>
           </div>
+
+          {/* Screen Bottom Fixed Thumbnails (inside Lightbox Modal) */}
+          {images.length > 1 && (
+            <div 
+              className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[120] flex gap-2.5 px-3 py-2 bg-white/10 backdrop-blur-md border border-white/10 shadow-2xl rounded-xl max-w-[90%] overflow-x-auto"
+              onClick={e => e.stopPropagation()}
+            >
+              {images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSelectImage(idx)}
+                  className="flex-shrink-0 w-12 h-12 overflow-hidden transition-all duration-300"
+                  style={{
+                    background: '#111',
+                    border: selectedImage === idx ? '2px solid #ffffff' : '2px solid transparent',
+                    borderRadius: '6px',
+                    transform: selectedImage === idx ? 'scale(1.05)' : 'none',
+                  }}
+                >
+                  {img ? (
+                    <img src={getImageUrl(img)} alt={`View ${idx + 1}`} className="w-full h-full object-cover pointer-events-none select-none" loading="lazy" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span style={{ color: '#444', fontSize: '8px' }}>✦</span>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
