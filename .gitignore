@@ -49,17 +49,26 @@ Architecture_Document_Handicraft_Jewelry.*
 *.temp
 .cache
 
-# Environment files at root (if any)
+# Environment files (root and subfolders)
 .env
 .env.local
+.env.production
 .env.*.local
+.env.*.production
+*.env
 
 # Build artifacts
 dist/
 build/
+.next/
+out/
+frontend-next/.next/
+frontend-next/build/
+frontend-next/out/
 
-# Dependencies (should be in subfolders only)
+# Dependencies
 node_modules/
+frontend-next/node_modules/
 
 # Coverage reports
 coverage/
