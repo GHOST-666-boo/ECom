@@ -14,8 +14,8 @@ class ImageStorageServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ImageStorageService();
-        
+        $this->service = new ImageStorageService;
+
         // Fake the R2 storage disk
         Storage::fake('r2');
     }
@@ -23,13 +23,13 @@ class ImageStorageServiceTest extends TestCase
     public function test_upload_image_stores_file_and_returns_path(): void
     {
         $file = UploadedFile::fake()->image('test.jpg', 800, 600);
-        
+
         $path = $this->service->uploadImage($file, 'products');
-        
+
         // Assert the path is in the correct format
         $this->assertStringStartsWith('products/', $path);
         $this->assertStringEndsWith('.jpg', $path);
-        
+
         // Assert the file was stored
         Storage::disk('r2')->assertExists($path);
     }
@@ -41,11 +41,11 @@ class ImageStorageServiceTest extends TestCase
             UploadedFile::fake()->image('test2.png'),
             UploadedFile::fake()->image('test3.webp'),
         ];
-        
+
         $paths = $this->service->uploadMultipleImages($files, 'products');
-        
+
         $this->assertCount(3, $paths);
-        
+
         foreach ($paths as $path) {
             Storage::disk('r2')->assertExists($path);
         }
@@ -55,9 +55,9 @@ class ImageStorageServiceTest extends TestCase
     {
         $file = UploadedFile::fake()->image('test.jpg');
         $path = $this->service->uploadImage($file, 'products');
-        
+
         $url = $this->service->getPublicUrl($path);
-        
+
         $this->assertIsString($url);
         $this->assertNotEmpty($url);
     }
@@ -66,11 +66,11 @@ class ImageStorageServiceTest extends TestCase
     {
         $file = UploadedFile::fake()->image('test.jpg');
         $path = $this->service->uploadImage($file, 'products');
-        
+
         Storage::disk('r2')->assertExists($path);
-        
+
         $result = $this->service->deleteImage($path);
-        
+
         $this->assertTrue($result);
         Storage::disk('r2')->assertMissing($path);
     }
@@ -81,17 +81,17 @@ class ImageStorageServiceTest extends TestCase
             UploadedFile::fake()->image('test1.jpg'),
             UploadedFile::fake()->image('test2.jpg'),
         ];
-        
+
         $paths = $this->service->uploadMultipleImages($files, 'products');
-        
+
         foreach ($paths as $path) {
             Storage::disk('r2')->assertExists($path);
         }
-        
+
         $result = $this->service->deleteMultipleImages($paths);
-        
+
         $this->assertTrue($result);
-        
+
         foreach ($paths as $path) {
             Storage::disk('r2')->assertMissing($path);
         }
