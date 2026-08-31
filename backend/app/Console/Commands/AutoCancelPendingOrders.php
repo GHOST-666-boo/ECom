@@ -101,6 +101,6 @@ class AutoCancelPendingOrders extends Command
 
         $this->info("Auto-cancel job completed. Cancelled: {$cancelledCount}, Failed: {$failedCount}");
 
-        return Command::SUCCESS;
+        return $failedCount > 0 && $cancelledCount === 0 ? Command::FAILURE : Command::SUCCESS;
     }
 }

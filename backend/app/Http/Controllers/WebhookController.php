@@ -222,7 +222,15 @@ class WebhookController extends Controller
         }
         
         // Send notification email about failed payment and cart restoration
-        $user->notify(new PaymentFailedNotification($order, $restoredItems, $skippedItems));
+        try {
+            $user->notify(new PaymentFailedNotification($order, $restoredItems, $skippedItems));
+        } catch (\Exception $e) {
+            Log::error('Failed to send payment failure notification', [
+                'order_id' => $order->id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
         
         Log::info('Cart restored after payment failure', [
             'order_id' => $order->id,

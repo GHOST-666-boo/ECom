@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -24,7 +25,11 @@ class CategoryController extends Controller
                     ->toArray();
             });
         } catch (\Throwable $e) {
-            // Fall back to database if cache is unavailable (Requirement 11.7)
+            // Log the cache failure for observability, then fall back to database (Requirement 11.7)
+            Log::warning('Cache unavailable for categories_tree, falling back to database', [
+                'error' => $e->getMessage(),
+            ]);
+
             $categories = Category::where('is_active', true)
                 ->with('children')
                 ->whereNull('parent_id')
